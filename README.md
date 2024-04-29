@@ -1,9 +1,15 @@
 # My beam 
-<img align="left" width="480px" src="https://repository-images.githubusercontent.com/">
+<img align="left" width="480px" src="img/how-it-work.gif" />
 
 Custom text select cursor (mouse pointer) per each input language and capslock state.
+Some of cursors included:
+<img src="img/ibeam-default.jpg" alt="default i-beam cursor" />
+<img src="img/ibeam-dot-green.jpg" alt="i-beam cursor with dot" />
+<img src="img/ibeam-circle-red.jpg" alt="i-beam cursor with circle" />
+<img src="img/ibeam-arrow-uo-blue.jpg" alt="i-beam cursor with arrow up" />
+<img src="img/ibeam-g.jpg" alt="i-beam cursor with letter g" />
 
-##Features
+## Features
 * reliable; work everywhere, including consoles and universal windows apps (aka metro apps)
 * easy setup; add/change/delete `./cursors/2-capslock.cur` to customize cursor for secondary input language with capslock on
 * compatible with Windows 10, 11
