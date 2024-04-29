@@ -1,12 +1,13 @@
 # My beam 
 <img align="left" width="480px" src="img/how-it-work.gif" />
+<br clear="right"/>
 
 Custom text select cursor (mouse pointer) per each input language and capslock state.
 Some of cursors included:
 <img src="img/ibeam-default.jpg" alt="default i-beam cursor" />
 <img src="img/ibeam-dot-green.jpg" alt="i-beam cursor with dot" />
 <img src="img/ibeam-circle-red.jpg" alt="i-beam cursor with circle" />
-<img src="img/ibeam-arrow-uo-blue.jpg" alt="i-beam cursor with arrow up" />
+<img src="img/ibeam-arrow-up-blue.jpg" alt="i-beam cursor with arrow up" />
 <img src="img/ibeam-g.jpg" alt="i-beam cursor with letter g" />
 
 ## Features
