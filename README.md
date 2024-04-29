@@ -1,4 +1,4 @@
-<img align="left" src="img/how-it-work.gif" />
+<img src="img/how-it-work.gif" width="608" />
 
 # My beam
 
