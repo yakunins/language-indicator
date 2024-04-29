@@ -1,6 +1,7 @@
 # My beam 
-<img align="left" width="480px" src="img/how-it-work.gif" />
-<br clear="right"/>
+<p>
+  <img align="left" src="img/how-it-work.gif" />
+</p>
 
 Custom text select cursor (mouse pointer) per each input language and capslock state.
 Some of cursors included:
