@@ -26,7 +26,8 @@ The cursor might also be altered when Caps Lock is on.
 - Supported cursor file formats: CUR, ANI, ICO.  
 - Create your ow cursor with [Sib Cursor Editor](http://www.sibcode.com/cursor-editor/).  
 - Currently, the script mainly affects the text selection cursor (`ibeam`), but this can be changed within the script.  
-- Types of custom cursors included:  
+
+## Custom Cursors Included
 <img src="img/ibeam-default.jpg" alt="default i-beam cursor" />
 <img src="img/ibeam-dot-green.jpg" alt="i-beam cursor with dot" />
 <img src="img/ibeam-circle-red.jpg" alt="i-beam cursor with circle" />
