@@ -1,11 +1,12 @@
 # My Beam
 
-##Enables Per-Language Cursor Styling (Language Indicator).
+<img src="img/how-it-work.gif" width="608" />
+
+## Enables Per-Language Cursor Styling (Language Indicator).
 
 This script keeps track of your current language/input method and changes your mouse cursor based on a list of cursors in the `./cursors/` folder.
 The cursor might also be altered when Caps Lock is on.
 
-<img src="img/how-it-work.gif" width="608" />
 
 ## Features
 
