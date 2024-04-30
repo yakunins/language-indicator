@@ -1,6 +1,8 @@
 # My beam
 
-Custom text select cursor (mouse pointer) per each input language and capslock state.  
+Per-language cursor style.
+Keep track of current language/input method and capslock state, if changed, to set different mouse cursor based on list from `./cursors/` folder.
+Practically to be applied only to text select cursor, aka `ibeam`.
 
 <img src="img/how-it-work.gif" width="608" />
 
@@ -29,3 +31,7 @@ Some of cursors included:
 <img src="img/ibeam-g.jpg" alt="i-beam cursor with letter g" />
 
 Cheers!
+
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/I-BeamCrossSection.svg/220px-I-BeamCrossSection.svg.png" alt="ibeam" />
+
+
