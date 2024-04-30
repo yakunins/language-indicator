@@ -24,7 +24,7 @@ Cursor also might be altered if capslock is on.
 Written for [AHK v2](https://www.autohotkey.com/docs/v2/).  
 Cursor file formats supported: `cur`, `ani`, `ico`.  
 Create your ow cursor with [Sib Cursor Editor](http://www.sibcode.com/cursor-editor/).  
-Practically to be applied only to `text select` cursor, aka `ibeam`, but this could be changed within the script.  
+By default it changes only `text select` cursor, aka `ibeam`, but this could be changed within the script.  
 Some of cursors included:  
 <img src="img/ibeam-default.jpg" alt="default i-beam cursor" />
 <img src="img/ibeam-dot-green.jpg" alt="i-beam cursor with dot" />
