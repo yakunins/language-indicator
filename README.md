@@ -1,8 +1,8 @@
 # My Beam
 
-Enables per-language cursor styling.
+Enables per-language cursor styling. Also known as language indicator.
 Keep track of current language/input method, if changed, to set different mouse cursor based on list from `./cursors/` folder.
-Practically to be applied only to *text select* cursor, aka `ibeam`. Cursor also might be altered if capslock is on.
+Cursor also might be altered if capslock is on.
 
 <img src="img/how-it-work.gif" width="608" />
 
@@ -24,6 +24,7 @@ Practically to be applied only to *text select* cursor, aka `ibeam`. Cursor also
 Written for [AHK v2](https://www.autohotkey.com/docs/v2/).  
 Cursor file formats supported: `cur`, `ani`, `ico`.  
 Create your ow cursor with [Sib Cursor Editor](http://www.sibcode.com/cursor-editor/).  
+Practically to be applied only to `text select` cursor, aka `ibeam`, but this could be changed within the script.  
 Some of cursors included:  
 <img src="img/ibeam-default.jpg" alt="default i-beam cursor" />
 <img src="img/ibeam-dot-green.jpg" alt="i-beam cursor with dot" />
