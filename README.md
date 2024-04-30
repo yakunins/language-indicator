@@ -1,23 +1,23 @@
-# My beam
+# My Beam
 
-Per-language cursor style.
-Keep track of current language/input method and capslock state, if changed, to set different mouse cursor based on list from `./cursors/` folder.
-Practically to be applied only to text select cursor, aka `ibeam`.
+Enables per-language cursor styling.
+Keep track of current language/input method, if changed, to set different mouse cursor based on list from `./cursors/` folder.
+Practically to be applied only to *text select* cursor, aka `ibeam`. Cursor also might be altered if capslock is on.
 
 <img src="img/how-it-work.gif" width="608" />
 
 ## Features
 
 -   reliable; work everywhere, including consoles and universal windows apps (aka metro apps)
--   easy setup; add/change/delete `./cursors/2-capslock.cur` to customize cursor for secondary input language with capslock on
+-   customizable; add/change/delete `./cursors/2-capslock.cur` to customize cursor for secondary input language with capslock turned on
 -   compatible with Windows 10, 11
 
 ## Installation
 
 1. clone the repo
-2. (optional) customize cursors in `./cursors/` folder
-3. create shortcut for `my-beam.exe`, a AHKv2-64 compiled version of script
-4. put shortcut to startup folder; for Windows 10 it should be `%appdata%\Microsoft\Windows\Start Menu\Programs\Startup`
+2. (optional) set your own cursors in `./cursors/` folder
+3. create shortcut for `my-beam.exe`, an AHKv2-64 compiled version of script
+4. move shortcut to startup folder; for Windows 10 it should be `%appdata%\Microsoft\Windows\Start Menu\Programs\Startup`
 
 ## Custoimization
 
