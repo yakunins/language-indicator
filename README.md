@@ -1,6 +1,6 @@
 # My Beam
 
-Enables per-language cursor styling. Also known as language indicator.
+Enables per-language cursor styling, aka language indicator.
 Keep track of current language/input method, if changed, to set different mouse cursor based on list from `./cursors/` folder.
 Cursor also might be altered if capslock is on.
 
