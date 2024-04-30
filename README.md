@@ -1,31 +1,31 @@
 # My Beam
 
-Enables per-language cursor styling, aka language indicator.
-Keep track of current language/input method, if changed, to set different mouse cursor based on list from `./cursors/` folder.
-Cursor also might be altered if capslock is on.
+##Enables Per-Language Cursor Styling (Language Indicator).
+
+This script keeps track of your current language/input method and changes your mouse cursor based on a list of cursors in the `./cursors/` folder.
+The cursor might also be altered when Caps Lock is on.
 
 <img src="img/how-it-work.gif" width="608" />
 
 ## Features
 
--   reliable; work everywhere, including consoles and universal windows apps (aka metro apps)
--   customizable; add/change/delete `./cursors/2-capslock.cur` to customize cursor for secondary input language with capslock turned on
--   compatible with Windows 10, 11
+-   Reliable: Works everywhere, including consoles and Universal Windows Apps (aka Metro apps).
+-   Customizable: Add, change, or delete cursors in ./cursors/ to personalize the look for different input languages and Caps Lock states, for example `./cursors/2-capslock.cur`.
 
 ## Installation
 
-1. clone the repo
-2. (optional) set your own cursors in `./cursors/` folder
-3. create shortcut for `my-beam.exe`, an AHKv2-64 compiled version of script
-4. move shortcut to startup folder; for Windows 10 it should be `%appdata%\Microsoft\Windows\Start Menu\Programs\Startup`
+1. Download `my-beam.exe` + `cursors` folder.
+2. (Optional) Remove unwanted, or add your own cursors to the `./cursors/` folder.
+3. Create shortcut for `my-beam.exe` (the compiled AHKv2-64 script).
+4. Move shortcut to startup folder. For Windows 10, this is typically `%appdata%\Microsoft\Windows\Start Menu\Programs\Startup`
 
 ## Custoimization
 
-Written for [AHK v2](https://www.autohotkey.com/docs/v2/).  
-Cursor file formats supported: `cur`, `ani`, `ico`.  
-Create your ow cursor with [Sib Cursor Editor](http://www.sibcode.com/cursor-editor/).  
-By default it changes only `text select` cursor, aka `ibeam`, but this could be changed within the script.  
-Some of cursors included:  
+- Written for [AHK v2](https://www.autohotkey.com/docs/v2/).  
+- Supported cursor file formats: CUR, ANI, ICO.  
+- Create your ow cursor with [Sib Cursor Editor](http://www.sibcode.com/cursor-editor/).  
+- Currently, the script mainly affects the text selection cursor (`ibeam`), but this can be changed within the script.  
+- Types of custom cursors included:  
 <img src="img/ibeam-default.jpg" alt="default i-beam cursor" />
 <img src="img/ibeam-dot-green.jpg" alt="i-beam cursor with dot" />
 <img src="img/ibeam-circle-red.jpg" alt="i-beam cursor with circle" />
