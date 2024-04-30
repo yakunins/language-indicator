@@ -23,6 +23,7 @@ Practically to be applied only to *text select* cursor, aka `ibeam`. Cursor also
 
 Written for [AHK v2](https://www.autohotkey.com/docs/v2/).  
 Cursor file formats supported: `cur`, `ani`, `ico`.  
+Create your ow cursor with [Sib Cursor Editor](http://www.sibcode.com/cursor-editor/).  
 Some of cursors included:  
 <img src="img/ibeam-default.jpg" alt="default i-beam cursor" />
 <img src="img/ibeam-dot-green.jpg" alt="i-beam cursor with dot" />
