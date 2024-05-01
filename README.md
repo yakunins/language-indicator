@@ -23,7 +23,7 @@ The cursor might also be altered when Caps Lock is on.
 - Written for [AHK v2](https://www.autohotkey.com/docs/v2/).  
 - Supported cursor file formats: CUR, ANI, ICO.  
 - Create your own cursor with [Sib Cursor Editor](http://www.sibcode.com/cursor-editor/).  
-- Currently, the script mainly affects the text selection cursor (`ibeam`), but this can be changed within the script.  
+- Currently, the script only affects the text selection cursor (`ibeam`). This can be changed within the script.  
 
 ## Custom Cursors Included
 <img align="left" src="img/ibeam-default.jpg" alt="default i-beam cursor" />
