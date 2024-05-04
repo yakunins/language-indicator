@@ -13,6 +13,7 @@ global immGetDefaultIMEWnd := DllCall("GetProcAddress", "Ptr",imm, "AStr","ImmGe
 ; https://learn.microsoft.com/en-us/windows/win32/menurc/about-cursors
 global cursorID := 32513 ; Used in DllCall("SetSystemCursor"...), IDC_ARROW := 32512, IDC_IBEAM := 32513, IDC_WAIT := 32514, ... 
 global cursorName := "IBeam" ; Exit fast if current cursor is different
+global isCursorSet := 0 
 
 global folder := A_ScriptDir . "\cursors\"
 global capslockSuffix := "-capslock"
@@ -32,6 +33,7 @@ OnExit ExitFunc
 Check() {
 	global
 	if (A_Cursor != cursorName) {
+		if (isCursorSet) RestoreCursors()
 		return ; exit fast, current cursor do not match targeted one
 	}
 
@@ -40,14 +42,14 @@ Check() {
 	localeIndex := GetInputLocaleIndex()
 	capslockState := GetCapslockState()
 
-	if (localeIndex = prevLocaleIndex) and (capslockState = prevCapslockState) {
+	if (isCursorSet) and (localeIndex = prevLocaleIndex) and (capslockState = prevCapslockState) {
 		return ; nor input locale neither capslock has been switched
 	}
 
 	cursorPath := GetCursorPath()
 
 	if (cursorPath = -1) or (cursorPath = 0) {
-		RestoreCursors()
+		if (isCursorSet) RestoreCursors()
 		return
 	}
 
@@ -143,6 +145,7 @@ ExitFunc(ExitReason, ExitCode) {
 RestoreCursors() {
 	SPI_SETCURSORS := 0x57
 	DllCall("SystemParametersInfo", "UInt",SPI_SETCURSORS, "UInt",0, "UInt",0, "UInt",0)
+	isCursorSet := 0
 }
 
 ; https://autohotkey.com/board/topic/32608-changing-the-system-cursor/
@@ -163,4 +166,5 @@ SetCursor( CursorFile := 0 ) {
 
 	CursorHandle := DllCall("LoadCursorFromFile", "Str",CursorFile)
 	DllCall("SetSystemCursor", "Uint",CursorHandle, "Int",cursorID) ; replaces cursor at cursorID with CursorHandle
+	isCursorSet := 1 
 }
