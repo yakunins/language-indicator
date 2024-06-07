@@ -19,7 +19,7 @@ global cursorFolder := A_ScriptDir . "\cursors\"
 global cursorExtensions := [".cur", ".ani", ".ico"]
 global cursorPath := -1 ; init, later should be smth like "\cursors\ibeam-1-capslock"
 
-global s1 := Object() ; global script state
+global s1 := Object() ; global object for storing script' state
 s1.localeIndex := -1 ; init, later 1, 2, 3...
 s1.capslockState := -1 ; init, later 0 or 1
 s1.isCursorSet := 0 

@@ -10,16 +10,17 @@
 global capslockSuffix := "-capslock"
 global caretMarkFolder := A_ScriptDir . "\carets\"
 global caretMarkExtensions := [".png", ".gif"]
-global caretMarkWin := -1 ; GUI's window to render caret's mark
+global caretMarkWnd := -1 ; GUI's window to render caret's mark
 global caretMarkPath := -1
 global isMarkPainted := 0 
 
 global marginX := 2
 global marginY := -1
 
-global s2 := Object() ; global script state
+global s2 := Object() ; global object for storing script' state
 s2.localeIndex := -1 ; init, later 1, 2, 3...
 s2.capslockState := -1 ; init, later 0 or 1
+s2.prevCaretPos := { x : -1, y : -1 }
 
 
 RunCaret()
@@ -27,6 +28,7 @@ RunCaret() {
 	SetTimer CheckCaret, 50 ; main routine, to be executed every 50 milliseconds
 }
 
+; Check whether caret mark must be repainted
 CheckCaret() {
 	global
 	s2.prevLocaleIndex := s2.localeIndex
@@ -36,7 +38,7 @@ CheckCaret() {
 
 	if (s2.localeIndex == s2.prevLocaleIndex) and (s2.capslockState == s2.prevCapslockState) {
 		if (isMarkPainted == 1) {
-			RepaintCaretMark()
+			RepaintCaretMark() ; caret position changed
  			return ; nor input locale, neither capslock has been switched
 		}
 	}
@@ -55,7 +57,7 @@ RepaintCaretMark() {
 	left := -1
 	top := -1
 	GetCaretRect(&left?, &top?, &right?, &bottom?, &detectMethod)
-	if ((detectMethod == "failure") or (left < 0 or top < 0)) {
+	if (detectMethod == "failure" or (left < 0 or top < 0)) {
 		HideMark()
 		return
 	}
@@ -65,6 +67,10 @@ RepaintCaretMark() {
 		HideMark() ; invisible caret?
 		return
 	}
+	if (s2.prevCaretPos.x == right and s2.prevCaretPos.y == top) {
+		return ; caret at the same position, no repaint
+	}
+	s2.prevCaretPos := { x: right, y: top }
 	PaintMark(right, top)
 }
 
@@ -79,33 +85,34 @@ PaintMark(x := -1, y := -1) {
 	h := ImageHeight(caretMarkPath)
 	halfHeight := Floor(h/2)
 
-	if (caretMarkWin == -1 or savedCaretMarkPath != caretMarkPath) {
+	if (caretMarkWnd == -1 or savedCaretMarkPath != caretMarkPath) {
 		InitMark()
 	}
 
 	showOpts := "X" x + marginX " Y" y - halfHeight + marginY " AutoSize NA"
-	caretMarkWin.Show(showOpts)
+	caretMarkWnd.Show(showOpts)
 	isMarkPainted := 1
 	savedCaretMarkPath := caretMarkPath
 
+	; clean and create transparent window for a caret mark's image
 	InitMark() {
-		if (caretMarkWin != -1)
-			caretMarkWin.Destroy()
+		if (caretMarkWnd != -1)
+			caretMarkWnd.Destroy()
 		backgroundColor := "FFFFFF"
 	
 		minSize := " +MinSize" w "x" h
 		maxSize := " +MaxSize" w "x" h
 	
 		; GUI to be transparent and not affected by DPI scaling
-		caretMarkWin := Gui("+LastFound -Caption +AlwaysOnTop +ToolWindow -Border -DPIScale -Resize" minSize maxSize)
-		caretMarkWin.MarginX := 0
-		caretMarkWin.MarginY := 0
-		caretMarkWin.Title := ""
-		caretMarkWin.BackColor := backgroundColor
-		WinSetTransColor(backgroundColor, caretMarkWin)
+		caretMarkWnd := Gui("+LastFound -Caption +AlwaysOnTop +ToolWindow -Border -DPIScale -Resize" minSize maxSize)
+		caretMarkWnd.MarginX := 0
+		caretMarkWnd.MarginY := 0
+		caretMarkWnd.Title := ""
+		caretMarkWnd.BackColor := backgroundColor
+		WinSetTransColor(backgroundColor, caretMarkWnd)
 		
 		; Create a dummy control to repurpose for ImagePut's functionality
-		display := caretMarkWin.Add("Text", "xm+0")
+		display := caretMarkWnd.Add("Text", "xm+0")
 		; Must resize the viewable area of the control
 		display.move(,,w,h)
 		; Use ImagePut to create a child window, and set the parent as the text control.
@@ -115,10 +122,10 @@ PaintMark(x := -1, y := -1) {
 
 HideMark() {
 	global
-	if (caretMarkWin == -1) {
+	if (caretMarkWnd == -1) {
 		return
 	}
-	caretMarkWin.Hide()
+	caretMarkWnd.Hide()
 	isMarkPainted := 0
 }
 
