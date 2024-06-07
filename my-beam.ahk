@@ -1,56 +1,59 @@
 ; Set custom text select pointer (mouse cursor) depending on input language and capslock state.
 ; Script is lookin into "./cursors/" folder for files "1.cur", "1-capslock.cur", "2.cur", etc.
 
-#SingleInstance Force
-
 ; https://www.autohotkey.com/boards/viewtopic.php?t=84140
+#SingleInstance Force
 #Requires AutoHotkey v2.0
-#DllLoad "Imm32" ; for consoles compatibility, see docs.microsoft.com/en-us/windows/win32/api/imm/
 
-global imm := DllCall("GetModuleHandle", "Str","Imm32", "Ptr") ; better performance; lexikos.github.io/v2/docs/commands/DllCall.htm
-global immGetDefaultIMEWnd := DllCall("GetProcAddress", "Ptr",imm, "AStr","ImmGetDefaultIMEWnd", "Ptr") ; docs.microsoft.com/en-us/windows/win32/api/imm/nf-imm-immgetdefaultimewnd
+#include lib/GetInputLocaleIndex.ahk
+#include lib/GetCapslockState.ahk
+#include lib/Jsons.ahk
+#include lib/Log.ahk
 
 ; https://learn.microsoft.com/en-us/windows/win32/menurc/about-cursors
-global cursorID := 32513 ; Used in DllCall("SetSystemCursor"...), IDC_ARROW := 32512, IDC_IBEAM := 32513, IDC_WAIT := 32514, ... 
-global cursorName := "IBeam" ; Exit fast if current cursor do not match
-global isCursorSet := 0 
+global cursorID := 32513 ; To be replaced with DllCall("SetSystemCursor"...), IDC_ARROW := 32512, IDC_IBEAM := 32513, IDC_WAIT := 32514, ... 
+global cursorName := "IBeam" ; Exit fast if current cursor do not match, must be consistent with ↑
 
-global folder := A_ScriptDir . "\cursors\"
 global capslockSuffix := "-capslock"
-global extensions := [".cur", ".ani", ".ico"]
+global cursorFolder := A_ScriptDir . "\cursors\"
+global cursorExtensions := [".cur", ".ani", ".ico"]
 global cursorPath := -1 ; init, later should be smth like "\cursors\ibeam-1-capslock"
 
-global localesArray := [GetInputLocaleID()] ; init at script start with value of input locale ID 
-global localeIndex := -1 ; init, later 1, 2, ...
-global capslockState := -1 ; init, later 0 or 1
+global s1 := Object() ; global script state
+s1.localeIndex := -1 ; init, later 1, 2, 3...
+s1.capslockState := -1 ; init, later 0 or 1
+s1.isCursorSet := 0 
 
 
-SetTimer CheckInputMethod, 50 ; main routine, to be executed every 50 milliseconds
-OnExit ExitFunc
+RunBeam()
+RunBeam() {
+	SetTimer CheckCursor, 50 ; main routine, to be executed every 50 milliseconds
+	OnExit ExitFunc
+}
 
 
 ; Check for change of input locale or capslock state
-CheckInputMethod() {
+CheckCursor() {
 	global
 	if (A_Cursor != cursorName) {
 		RevertCursors()
 		return ; exit fast, current cursor do not match targeted one
 	}
 
-	prevLocaleIndex := localeIndex
-	prevCapslockState := capslockState
-	localeIndex := GetInputLocaleIndex()
-	capslockState := GetCapslockState()
+	s1.prevLocaleIndex := s1.localeIndex
+	s1.prevCapslockState := s1.capslockState
+	s1.localeIndex := GetInputLocaleIndex()
+	s1.capslockState := GetCapslockState()
 
-	if (localeIndex = prevLocaleIndex) and (capslockState = prevCapslockState) {
-		if (isCursorSet = 1) {
+	if (s1.localeIndex == s1.prevLocaleIndex) and (s1.capslockState == s1.prevCapslockState) {
+		if (s1.isCursorSet == 1) {
 			return ; nor input locale, neither capslock has been switched
 		}
 	}
 
 	cursorPath := GetCursorPath()
 
-	if (cursorPath = -1) or (cursorPath = 0) {
+	if (cursorPath == -1) or (cursorPath == 0) {
 		RevertCursors()
 		return
 	}
@@ -58,84 +61,19 @@ CheckInputMethod() {
 	SetCursor(cursorPath)
 }
 
-GetCapslockState() {
-	return GetKeyState("Capslock", "T")
-} 
-
-GetInputLocaleID() {
-	foregroundWindow := DllCall("GetForegroundWindow") ; docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getforegroundwindow
-
-	isConsole := WinActive("ahk_class ConsoleWindowClass") ; CMD, Powershell
-	isVGUI := WinActive("ahk_class vguiPopupWindow") ; Popups
-	isUWP := WinActive("ahk_class ApplicationFrameWindow") ; Steam, UWP apps: autohotkey.com/boards/viewtopic.php?f=76&t=69414
-
-	if isConsole {
-		IMEWnd := DllCall(immGetDefaultIMEWnd, "Ptr",foregroundWindow) ; DllCall("Imm32.dll\ImmGetDefaultIMEWnd", "Ptr",fgWin)
-		if (IMEWnd = 0) {
-			return
-		} else {
-			foregroundWindow := IMEWnd
-		}
-	} else if isVGUI or isUWP { 
-		Focused	:= ControlGetFocus("A")
-		if (Focused = 0) {
-			return
-		} else {
-			ctrlID := ControlGetHwnd(Focused, "A")
-			foregroundWindow := ctrlID
-		}
-	}
-	threadId := DllCall("GetWindowThreadProcessId", "Ptr",foregroundWindow , "Ptr",0) ; docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getwindowthreadprocessid
-	inputLocaleId := DllCall("GetKeyboardLayout", "UInt",threadId) ; precise '0xfffffffff0c00409' value
-
-	return inputLocaleId
-}
-
-GetInputLocaleIndex() {
-	localeId := GetInputLocaleID()
-
-	if !localeId {
-		return 0
-	}
-
-	; docs.microsoft.com/en-us/windows/win32/intl/language-identifiers
-	; lWord := localeId & 0xFFFF ; Primary Language ID 
-	; hWord := localeId >> 16 ; SubLanguage ID
-
-	index := HasVal(localesArray, localeId)
-
-	; add localeId into localesArray
-	if !index {
-		localesArray.Push localeId
-		index := localesArray.length
-	}
-
-	return index
-}
-
 GetCursorPath() {
-	for Ext in extensions {
-		if (GetCapslockState() = 1) {
-			path := folder . localeIndex . capslockSuffix . Ext ; "\cursors\ibeam-1-capslock.cur"
+	for Ext in cursorExtensions {
+		if (GetCapslockState() == 1) {
+			path := cursorFolder . s1.localeIndex . capslockSuffix . Ext ; e.g. "cursors\1-capslock.cur"
 			if (FileExist(path))
 				return path ; capslock-suffixed file to be used
 		}
 		; fallback if no capslock-suffixed file found
-		path := folder . localeIndex . Ext ; "\cursors\ibeam-1.cur", e.g. 
+		path := cursorFolder . s1.localeIndex . Ext ; e.g. "\cursors\1.cur"
 		if (FileExist(path)) 
 			return path
 	}
 	return -1
-}
-
-HasVal(haystack, val) {
-	for index, value in haystack
-		if (value = val)
-			return index
-	if !IsObject(haystack)
-		; throw Exception("Bad haystack!", -1, haystack) ; ahk v1
-		throw ValueError("haystack id not an object", -1, haystack) ; ahk v2
-	return 0
 }
 
 ExitFunc(ExitReason, ExitCode) {
@@ -143,24 +81,10 @@ ExitFunc(ExitReason, ExitCode) {
 		RestoreCursors()
 }
 
-RestoreCursors() {
-	SPI_SETCURSORS := 0x57
-	DllCall("SystemParametersInfo", "UInt",SPI_SETCURSORS, "UInt",0, "UInt",0, "UInt",0)
-}
-
-; Restores cursors if they were altered
-RevertCursors() {
-	global
-	if (isCursorSet = 1) {
-		RestoreCursors() 
-		isCursorSet := 0
-	}
-}
-
 ; https://autohotkey.com/board/topic/32608-changing-the-system-cursor/
 SetCursor( CursorFile := 0 ) {
 	global
-	if (!CursorFile or CursorFile = 0) {
+	if (!CursorFile or CursorFile == 0) {
 		MsgBox("my-beam.ahk error: cursor filename is not set")
 		return
 	} else if FileExist( CursorFile ) {
@@ -174,13 +98,21 @@ SetCursor( CursorFile := 0 ) {
 		return
 	}
 
-	isCursorSet := 1 
+	s1.isCursorSet := 1 
 	CursorHandle := DllCall("LoadCursorFromFile", "Str",CursorFile)
 	DllCall("SetSystemCursor", "Uint",CursorHandle, "Int",cursorID) ; replaces cursor at cursorID with CursorHandle
 }
 
-; for debugging purposes
-Log(val) {
-	ToolTip val
-	SetTimer () => ToolTip(), -200
+RestoreCursors() {
+	SPI_SETCURSORS := 0x57
+	DllCall("SystemParametersInfo", "UInt",SPI_SETCURSORS, "UInt",0, "UInt",0, "UInt",0)
+}
+
+; Restores cursors if they were altered
+RevertCursors() {
+	global
+	if (s1.isCursorSet == 1) {
+		RestoreCursors() 
+		s1.isCursorSet := 0
+	}
 }
