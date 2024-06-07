@@ -4,12 +4,12 @@
 
 ## Enables Per-Language Text Caret and Mouse Cursor Styling
 
-This script keeps track of your current language (in fact any input method) and changes caret and mouse cursor based on files inside folders `./carets/` and `./cursors/`.
+This script keeps track of your current language (or input method, keyboard layout) and changes caret and mouse cursor based on files inside folders `./carets/` and `./cursors/`.
 The caret and cursor might also be altered depending on capslock state, e.g. create `./carets/2-capslock.png` for _secondary language with capslock on_.
 
 **Reliable**: Works everywhere, including consoles and Universal Windows Apps (aka Metro apps).
 
-**Customizable**: Add, change, or delete cursors in `./cursors/` to personalize the look for different input languages and Caps Lock state. For example `2.cur` to be used if _secondary_ input method is turned on.
+**Customizable**: Add, change, or delete cursors in `./cursors/` to set the look for different languages and Caps Lock state. For example `2.cur` to be used if _secondary_ input method is turned on. Same with caret marks in `./carets/` folder.
 
 ## Installation
 
