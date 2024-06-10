@@ -9,14 +9,14 @@ The caret and cursor might also be altered depending on capslock state, e.g. cre
 
 **Reliable**: Works everywhere, including consoles and Universal Windows Apps (aka Metro apps).
 
-**Customizable**: Add, change, or delete cursors in `./cursors/` to set the look for different languages and Caps Lock state. For example `2.cur` to be used if _secondary_ input method is turned on. Same is applicable for caret marks inside `./carets/` folder.
+**Customizable**: Add, change, or delete cursors in `./cursors/` to set the look for different languages and Caps Lock state. For example `2.cur` to be used if _secondary_ input method is turned on. Same applicable for caret marks `2.png` inside `./carets/` folder.
 
 ## Installation
 
 1. Download `language-indicator.exe` (compiled AHKv2-64 script)
 2. Download `./carets/` + `./cursors/` folders
-3. (Optional) Remove unwanted, or add your own carets or cursors
-4. Create shortcut for `language-indicator.exe`.
+3. (Optional) Remove unwanted, or add your own caret marks or cursors
+4. Create shortcut for `language-indicator.exe`
 5. Move shortcut to the startup folder. For Windows 10, this is typically `%appdata%\Microsoft\Windows\Start Menu\Programs\Startup`
 
 ## Customization
@@ -26,7 +26,7 @@ The caret and cursor might also be altered depending on capslock state, e.g. cre
 -   Create your own cursor with [Sib Cursor Editor](http://www.sibcode.com/cursor-editor/).
 -   Currently, the script only affects the text selection cursor (`ibeam`). This can be changed within the script.
 
-## Custom Cursors Included
+## Text Select Cursors Included
 
 <img align="left" src="img/ibeam-default.jpg" alt="default i-beam cursor" />
 <img align="left" src="img/ibeam-dot-green.jpg" alt="i-beam cursor with dot" />
@@ -35,5 +35,3 @@ The caret and cursor might also be altered depending on capslock state, e.g. cre
 <img src="img/ibeam-g.jpg" alt="i-beam cursor with letter g" />
 
 Cheers!
-
-<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/I-BeamCrossSection.svg/220px-I-BeamCrossSection.svg.png" alt="ibeam" />
