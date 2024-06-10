@@ -28,7 +28,7 @@ RunCaret() {
 	SetTimer CheckCaret, 50 ; main routine, to be executed every 50 milliseconds
 }
 
-; Check whether caret mark must be repainted
+; Checks if caret reflect current input locale or capslock state
 CheckCaret() {
 	global
 	s2.prevLocaleIndex := s2.localeIndex

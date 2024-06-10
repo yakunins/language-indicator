@@ -32,7 +32,7 @@ RunBeam() {
 }
 
 
-; Check for change of input locale or capslock state
+; Checks if cursor reflect current input locale or capslock state
 CheckCursor() {
 	global
 	if (A_Cursor != cursorName) {
