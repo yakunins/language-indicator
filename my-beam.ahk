@@ -7,8 +7,8 @@
 
 #include lib/GetInputLocaleIndex.ahk
 #include lib/GetCapslockState.ahk
-#include lib/Jsons.ahk
-#include lib/Log.ahk
+;#include lib/Log.ahk
+;#include lib/Jsons.ahk ; Jsons.Dump + Jsons.Load
 
 ; https://learn.microsoft.com/en-us/windows/win32/menurc/about-cursors
 global cursorID := 32513 ; To be replaced with DllCall("SetSystemCursor"...), IDC_ARROW := 32512, IDC_IBEAM := 32513, IDC_WAIT := 32514, ... 
@@ -19,18 +19,17 @@ global cursorFolder := A_ScriptDir . "\cursors\"
 global cursorExtensions := [".cur", ".ani", ".ico"]
 global cursorPath := -1 ; init, later should be smth like "\cursors\ibeam-1-capslock"
 
-global s1 := Object() ; global object for storing script' state
-s1.localeIndex := -1 ; init, later 1, 2, 3...
-s1.capslockState := -1 ; init, later 0 or 1
-s1.isCursorSet := 0 
-
+global cur := Object() ; global storage of script state
+cur.localeIndex := -1 ; init, later 1, 2, 3...
+cur.capslockState := -1 ; init, later 0 or 1
+cur.modified := 0 
+cur.prev := { localeIndex : cur.localeIndex, capslockState : cur.capslockState }
 
 RunBeam()
 RunBeam() {
 	SetTimer CheckCursor, 50 ; main routine, to be executed every 50 milliseconds
 	OnExit ExitFunc
 }
-
 
 ; Checks if cursor reflect current input locale or capslock state
 CheckCursor() {
@@ -40,13 +39,13 @@ CheckCursor() {
 		return ; exit fast, current cursor do not match targeted one
 	}
 
-	s1.prevLocaleIndex := s1.localeIndex
-	s1.prevCapslockState := s1.capslockState
-	s1.localeIndex := GetInputLocaleIndex()
-	s1.capslockState := GetCapslockState()
+	cur.prev.localeIndex := cur.localeIndex
+	cur.prev.capslockState := cur.capslockState
+	cur.localeIndex := GetInputLocaleIndex()
+	cur.capslockState := GetCapslockState()
 
-	if (s1.localeIndex == s1.prevLocaleIndex) and (s1.capslockState == s1.prevCapslockState) {
-		if (s1.isCursorSet == 1) {
+	if (cur.localeIndex == cur.prev.localeIndex) and (cur.capslockState == cur.prev.capslockState) {
+		if (cur.modified == 1) {
 			return ; nor input locale, neither capslock has been switched
 		}
 	}
@@ -64,12 +63,12 @@ CheckCursor() {
 GetCursorPath() {
 	for Ext in cursorExtensions {
 		if (GetCapslockState() == 1) {
-			path := cursorFolder . s1.localeIndex . capslockSuffix . Ext ; e.g. "cursors\1-capslock.cur"
+			path := cursorFolder . cur.localeIndex . capslockSuffix . Ext ; e.g. "cursors\1-capslock.cur"
 			if (FileExist(path))
 				return path ; capslock-suffixed file to be used
 		}
 		; fallback if no capslock-suffixed file found
-		path := cursorFolder . s1.localeIndex . Ext ; e.g. "\cursors\1.cur"
+		path := cursorFolder . cur.localeIndex . Ext ; e.g. "\cursors\1.cur"
 		if (FileExist(path)) 
 			return path
 	}
@@ -98,7 +97,7 @@ SetCursor( CursorFile := 0 ) {
 		return
 	}
 
-	s1.isCursorSet := 1 
+	cur.modified := 1 
 	CursorHandle := DllCall("LoadCursorFromFile", "Str",CursorFile)
 	DllCall("SetSystemCursor", "Uint",CursorHandle, "Int",cursorID) ; replaces cursor at cursorID with CursorHandle
 }
@@ -111,8 +110,8 @@ RestoreCursors() {
 ; Restores cursors if they were altered
 RevertCursors() {
 	global
-	if (s1.isCursorSet == 1) {
+	if (cur.modified == 1) {
 		RestoreCursors() 
-		s1.isCursorSet := 0
+		cur.modified := 0
 	}
 }
