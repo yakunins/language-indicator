@@ -1,6 +1,6 @@
 # Language Indicator
 
-<img src="img/how-it-work.gif" width="608" />
+<img src="img/how-it-work.gif" width="507" />
 
 ## Per-Language Styling of Text Caret and Mouse Cursor
 
