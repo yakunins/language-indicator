@@ -1,6 +1,6 @@
 # Language Indicator
 
-<img src="img/how-it-work.gif" width="507" />
+<img src="img/how-it-work.gif" width="507" alt="language indicator for text caret and mouse cursor" />
 
 ## Per-Language Styling of Text Caret and Mouse Cursor
 
@@ -14,18 +14,18 @@ _language#2+capslock_ → `cursors/2-capslock.cur` + `carets/2-capslock.png`
 
 ## Installation
 
-1. Download `language-indicator.exe` (compiled AHKv2-64 script)
-2. Download `./carets/` and `./cursors/` folders
-3. (Optional) Remove unwanted or add your own caret marks or cursors
-4. Create shortcut for `language-indicator.exe`
-5. Move shortcut to the startup folder. For Windows 10, this is typically `%appdata%\Microsoft\Windows\Start Menu\Programs\Startup`
+1. Download [`language-indicator.exe`](language-indicator.exe), a compiled AHKv2-64 script
+2. Download [`carets`](./carets) or [`cursors`](./cursors) folders
+3. Create shortcut for `language-indicator.exe`
+4. Move shortcut to the startup folder. For Windows 10, this is typically `%appdata%\Microsoft\Windows\Start Menu\Programs\Startup`
 
 ## Customization
 
--   Written for [AHK v2](https://www.autohotkey.com/docs/v2/).
--   Supported cursor file formats: CUR, ANI, ICO.
--   Supported caret mark formats: PNG, GIF.
--   Create your own cursor with [Sib Cursor Editor](http://www.sibcode.com/cursor-editor/).
+-   Remove unwanted or add your own caret mark or mouse cursor, some variants are provided within [`cursor/variants/`](./cursor/variants/) and [`carets/variants`](./carets/variants) folders
+-   Supported caret mark formats: PNG, GIF
+-   Supported cursor file formats: CUR, ANI, ICO
+-   Create your own cursor with [Sib Cursor Editor](http://www.sibcode.com/cursor-editor/)
+-   Written for [AHK v2](https://www.autohotkey.com/docs/v2/)
 
 ## Text Select Cursors Included
 
