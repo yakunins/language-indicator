@@ -8,18 +8,17 @@
 #include lib/GetInputLocaleIndex.ahk
 #include lib/GetCapslockState.ahk
 ;#include lib/Log.ahk
-;#include lib/Jsons.ahk ; Jsons.Dump + Jsons.Load
+;#include lib/Jsons.ahk
 
 ; https://learn.microsoft.com/en-us/windows/win32/menurc/about-cursors
 global cursorID := 32513 ; To be replaced with DllCall("SetSystemCursor"...), IDC_ARROW := 32512, IDC_IBEAM := 32513, IDC_WAIT := 32514, ... 
 global cursorName := "IBeam" ; Exit fast if current cursor do not match, must be consistent with ↑
-
 global capslockSuffix := "-capslock"
-global cursorFolder := A_ScriptDir . "\cursors\"
-global cursorExtensions := [".cur", ".ani", ".ico"]
-global cursorPath := -1 ; init, later should be smth like "\cursors\ibeam-1-capslock"
-
 global cur := Object() ; global storage of script state
+
+cur.folder := A_ScriptDir . "\cursors\"
+cur.extensions := [".cur", ".ani", ".ico"]
+cur.cursorPath := -1 ; init, later should be smth like "\cursors\ibeam-1-capslock"
 cur.localeIndex := -1 ; init, later 1, 2, 3...
 cur.capslockState := -1 ; init, later 0 or 1
 cur.modified := 0 
@@ -61,14 +60,14 @@ CheckCursor() {
 }
 
 GetCursorPath() {
-	for Ext in cursorExtensions {
+	for Ext in cur.extensions {
 		if (GetCapslockState() == 1) {
-			path := cursorFolder . cur.localeIndex . capslockSuffix . Ext ; e.g. "cursors\1-capslock.cur"
+			path := cur.folder . cur.localeIndex . capslockSuffix . Ext ; e.g. "cursors\1-capslock.cur"
 			if (FileExist(path))
 				return path ; capslock-suffixed file to be used
 		}
 		; fallback if no capslock-suffixed file found
-		path := cursorFolder . cur.localeIndex . Ext ; e.g. "\cursors\1.cur"
+		path := cur.folder . cur.localeIndex . Ext ; e.g. "\cursors\1.cur"
 		if (FileExist(path)) 
 			return path
 	}
