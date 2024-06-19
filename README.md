@@ -4,9 +4,12 @@
 
 ## Per-Language Styling of Text Caret and Mouse Cursor
 
-This script keeps track of your current language (or input method, keyboard layout) and changes [caret](https://en.wikipedia.org/wiki/Caret_navigation) and [text selection mouse cursor](<https://en.wikipedia.org/wiki/Cursor_(user_interface)#I-beam_pointer>). Works _almost_ everywhere, including consoles and Universal Windows Apps (aka Metro apps).
+This script keeps track of your current language (or input method, keyboard layout) and changes [caret](https://en.wikipedia.org/wiki/Caret_navigation) and [text selection mouse cursor](<https://en.wikipedia.org/wiki/Cursor_(user_interface)#I-beam_pointer>).
+It works in most envs, including consoles and Universal Windows Apps (aka Metro apps).
+Exceptions are Adobe Indesign and some .NET MAUI apps.
 
-Add, change, or delete caret marks and cursors to set you own look for different language and caps lock state:  
+Add, change, or delete caret marks and cursors to personalize their appearance.
+Use the following naming convention:  
 _language#1+capslock_ → `cursors/1-capslock.cur` + `carets/1-capslock.png`  
 _language#2_ → `cursors/2.cur` + `carets/2.png`  
 _language#2+capslock_ → `cursors/2-capslock.cur` + `carets/2-capslock.png`  
