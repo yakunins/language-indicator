@@ -4,9 +4,10 @@
 
 ## Per-Language Styling of Text Caret and Mouse Cursor
 
-Keeps track of your current language (or input method, keyboard layout) and changes [caret](https://en.wikipedia.org/wiki/Caret_navigation) and [text selection mouse cursor](<https://en.wikipedia.org/wiki/Cursor_(user_interface)#I-beam_pointer>).
-It works in most envs, including consoles and Universal Windows Apps (aka Metro apps).
-Exceptions are Adobe Indesign and some .NET MAUI apps.
+Keeps track of your current language (or input method, keyboard layout) and changes [caret](https://en.wikipedia.org/wiki/Caret_navigation) and [text selection mouse cursor](<https://en.wikipedia.org/wiki/Cursor_(user_interface)#I-beam_pointer>).  
+It works in most envs, including consoles and Universal Windows Apps (aka Metro apps).  
+Exceptions are Adobe Indesign and some .NET MAUI apps.  
+Written for [AHK v2](https://www.autohotkey.com/docs/v2/)
 
 Add, change, or delete caret marks and cursors to personalize their appearance.
 Use the following naming convention:  
@@ -27,7 +28,6 @@ _language#2+capslock_ → `cursors/2-capslock.cur` + `carets/2-capslock.png`
 -   Supported caret mark formats: PNG, GIF
 -   Supported cursor file formats: CUR, ANI, ICO
 -   Create your own cursor with [Sib Cursor Editor](http://www.sibcode.com/cursor-editor/)
--   Written for [AHK v2](https://www.autohotkey.com/docs/v2/)
 
 ## Text Select Cursors Included
 
