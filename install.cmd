@@ -10,13 +10,13 @@ if not defined StartupDir set "%APPDATA%\Microsoft\Windows\Start Menu\Programs\S
 ::echo %StartupDir%
 
 set CurrentDir=%CD%
-set ShortcutName=language-indicator-shortcut.lnk
 
 :: create shortcut with Powershell command
-set PWS_TARGET='%CurrentDir%\language-indicator.exe'
-set PWS_SHORTCUT='%StartupDir%\%ShortcutName%'
-set PWS=powershell.exe -ExecutionPolicy Bypass -NoLogo -NonInteractive -NoProfile
-%PWS% -Command "$ws = New-Object -ComObject WScript.Shell; $s = $ws.CreateShortcut(%PWS_SHORTCUT%); $S.TargetPath = %PWS_TARGET%; $S.Save()"
+set ShortcutName=language-indicator-shortcut.lnk
+set Target='%CurrentDir%\language-indicator.exe'
+set Shortcut='%StartupDir%\%ShortcutName%'
+set PS=powershell.exe -ExecutionPolicy Bypass -NoLogo -NonInteractive -NoProfile
+%PS% -Command "$ws = New-Object -ComObject WScript.Shell; $s = $ws.CreateShortcut(%Shortcut%); $S.TargetPath = %Target%; $S.Save()"
 
 :prompt
 set /P OPEN=Open startup folder? Y/[N]

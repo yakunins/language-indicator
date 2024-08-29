@@ -18,7 +18,7 @@ _language#2+capslock_ → `cursors/2-capslock.cur` + `carets/2-capslock.png`
 
 ## Installation
 
-1. Download [`language-indicator.exe`](language-indicator.exe), compiled version (AHKv2-64) of the script
+1. Download [`language-indicator.exe`](language-indicator.exe), a compiled version (AHKv2-64) of the script
 2. Download [`carets`](./carets) or [`cursors`](./cursors) folders
 3. Download and run [`install.cmd`](install.cmd) to create shortcut at startup folder
 
