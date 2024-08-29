@@ -4,7 +4,7 @@
 
 ## Per-Language Styling of Text Caret and Mouse Cursor
 
-This script keeps track of your current language (or input method, keyboard layout) and changes [caret](https://en.wikipedia.org/wiki/Caret_navigation) and [text selection mouse cursor](<https://en.wikipedia.org/wiki/Cursor_(user_interface)#I-beam_pointer>).
+Keeps track of your current language (or input method, keyboard layout) and changes [caret](https://en.wikipedia.org/wiki/Caret_navigation) and [text selection mouse cursor](<https://en.wikipedia.org/wiki/Cursor_(user_interface)#I-beam_pointer>).
 It works in most envs, including consoles and Universal Windows Apps (aka Metro apps).
 Exceptions are Adobe Indesign and some .NET MAUI apps.
 
@@ -17,10 +17,9 @@ _language#2+capslock_ → `cursors/2-capslock.cur` + `carets/2-capslock.png`
 
 ## Installation
 
-1. Download [`language-indicator.exe`](language-indicator.exe), a compiled AHKv2-64 script
+1. Download [`language-indicator.exe`](language-indicator.exe), compiled version (AHKv2-64) of the script
 2. Download [`carets`](./carets) or [`cursors`](./cursors) folders
-3. Create shortcut for `language-indicator.exe`
-4. Move shortcut to the startup folder. For Windows 10, this is typically `%appdata%\Microsoft\Windows\Start Menu\Programs\Startup`
+3. Download and run `install.cmd`](install.cmd) to create shortcut at startup folder
 
 ## Customization
 
