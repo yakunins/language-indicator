@@ -3,6 +3,3 @@
 
 #include my-beam.ahk
 #include my-caret.ahk
-
-RunBeam()
-RunCaret()
