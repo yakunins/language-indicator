@@ -8,21 +8,23 @@
 #include lib/ImagePut.ahk
 #include lib/GetCaretRect.ahk
 #include lib/GetCapslockState.ahk
-;#include lib/Log.ahk
-;#include lib/Jsons.ahk
 
 global capslockSuffix := "-capslock"
 global marginX := 1 ; mark's margin from the caret itself
 global marginY := -1
 
-global crt := Object() ; global storage of script state
+global crt := {} ; global storage of script state
 crt.folder := A_ScriptDir . "\carets\"
 crt.extensions := [".png", ".gif"]
 crt.markWindow := -1 ; GUI's window to render caret's mark
 crt.markPath := -1
 crt.isShown := 0
 crt.localeIndex := -1 ; init, later 1, 2, 3...
-crt.prev := { x : -1, y : -1, markPath : crt.markPath }
+crt.prev := {
+	x: -1,
+	y: -1,
+	markPath: crt.markPath
+}
 
 RunCaret()
 RunCaret() {
@@ -68,7 +70,7 @@ PaintMark(x := -1, y := -1) {
 
 	w := ImageWidth(crt.markPath)
 	h := ImageHeight(crt.markPath)
-	halfMarkHeight := Floor(h/2)
+	halfMarkHeight := Floor(h / 2)
 
 	if (crt.markWindow == -1 or crt.prev.markPath != crt.markPath) {
 		crt.prev.markPath := crt.markPath
@@ -86,10 +88,10 @@ PaintMark(x := -1, y := -1) {
 		if (crt.markWindow != -1)
 			crt.markWindow.Destroy()
 
-		backgroundColor := "FFFFFF"	
+		backgroundColor := "FFFFFF"
 		minSize := " +MinSize" w "x" h
 		maxSize := " +MaxSize" w "x" h
-	
+
 		; GUI to be transparent and not affected by DPI scaling
 		crt.markWindow := Gui("+LastFound -Caption +AlwaysOnTop +ToolWindow -Border -DPIScale -Resize" minSize maxSize)
 		crt.markWindow.MarginX := 0
@@ -97,12 +99,12 @@ PaintMark(x := -1, y := -1) {
 		crt.markWindow.Title := ""
 		crt.markWindow.BackColor := backgroundColor
 		WinSetTransColor(backgroundColor, crt.markWindow)
-		
+
 		; create a dummy control to repurpose for ImagePut's functionality
 		display := crt.markWindow.Add("Text", "xm+0")
-		display.move(,,w,h) ; must resize the viewable area of the control
+		display.move(, , w, h) ; must resize the viewable area of the control
 		; use ImagePut to create a child window, and set the parent as the text control
-		image_hwnd := ImageShow(crt.markPath,, [0, 0], 0x40000000 | 0x10000000 | 0x8000000,, display.hwnd)
+		image_hwnd := ImageShow(crt.markPath, , [0, 0], 0x40000000 | 0x10000000 | 0x8000000, , display.hwnd)
 	}
 }
 
@@ -128,7 +130,7 @@ GetImagePath() {
 		}
 		; fallback if no capslock-suffixed file found
 		path := crt.folder . crt.localeIndex . Ext ; e.g. "\carets\1.png"
-		if (FileExist(path)) 
+		if (FileExist(path))
 			return path
 	}
 	return -1
