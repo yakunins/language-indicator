@@ -4,12 +4,12 @@
 #SingleInstance Force
 #Requires AutoHotkey v2.0
 
-#include lib/GetInputLocaleIndex.ahk
-#include lib/ImagePut.ahk
-#include lib/GetCaretRect.ahk
-#include lib/GetCapslockState.ahk
-;#include lib/Log.ahk
-;#include lib/Jsons.ahk
+#include GetInputLocaleIndex.ahk
+#include ImagePut.ahk
+#include GetCaretRect.ahk
+#include GetCapslockState.ahk
+;#include Log.ahk
+;#include Jsons.ahk
 
 global capslockSuffix := "-capslock"
 global marginX := 1 ; mark's margin from the caret itself

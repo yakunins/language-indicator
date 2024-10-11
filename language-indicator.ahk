@@ -1,5 +1,5 @@
 #SingleInstance Force
 #Requires AutoHotkey v2.0
 
-#include my-beam.ahk
-#include my-caret.ahk
+#include lib\LanguageIndicatorCursor.ahk
+#include lib\LanguageIndicatorCaret.ahk

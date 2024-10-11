@@ -5,10 +5,10 @@
 #SingleInstance Force
 #Requires AutoHotkey v2.0
 
-#include lib/GetInputLocaleIndex.ahk
-#include lib/GetCapslockState.ahk
-;#include lib/Log.ahk
-;#include lib/Jsons.ahk
+#include GetInputLocaleIndex.ahk
+#include GetCapslockState.ahk
+;#include Log.ahk
+;#include Jsons.ahk
 
 ; https://learn.microsoft.com/en-us/windows/win32/menurc/about-cursors
 global cursorID := 32513 ; To be replaced with DllCall("SetSystemCursor"...), IDC_ARROW := 32512, IDC_IBEAM := 32513, IDC_WAIT := 32514, ... 
@@ -24,8 +24,8 @@ cur.capslockState := -1 ; init, later 0 or 1
 cur.modified := 0 
 cur.prev := { localeIndex : cur.localeIndex, capslockState : cur.capslockState }
 
-RunBeam()
-RunBeam() {
+RunCursor()
+RunCursor() {
 	SetTimer CheckCursor, 50 ; main routine, to be executed every 50 milliseconds
 	OnExit ExitFunc
 }
