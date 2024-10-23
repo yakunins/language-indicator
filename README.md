@@ -24,12 +24,12 @@ _language#2+capslock_ → `cursors/2-capslock.cur` + `carets/2-capslock.png`
 
 ## Customization
 
--   Remove unwanted or add your own caret mark or mouse cursor, some variants are provided within [`cursor/variants/`](./cursor/variants/) and [`carets/variants`](./carets/variants) folders
+-   Remove unwanted or add your own caret mark or mouse cursor, see variants included → [`cursor/variants/`](./cursor/variants/) and [`carets/variants`](./carets/variants)
 -   Supported caret mark formats: PNG, GIF
 -   Supported cursor file formats: CUR, ANI, ICO
 -   Create your own cursor with [Sib Cursor Editor](http://www.sibcode.com/cursor-editor/)
 
-## Text Select Cursors Included
+## Cursors and Caret Variants Included
 
 <img align="left" src="img/ibeam-default.jpg" alt="default i-beam cursor" />
 <img align="left" src="img/ibeam-dot-green.jpg" alt="i-beam cursor with dot" />
