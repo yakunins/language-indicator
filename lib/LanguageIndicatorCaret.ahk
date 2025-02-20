@@ -48,7 +48,7 @@ CheckCaret() {
 	if (debug)
 		DebugCaret(&left, &top, &right, &bottom, &detectMethod)
 
-	if (InStr(detectMethod, "failure") or w < 1) {
+	if (InStr(detectMethod, "failure") or (w < 1 and h < 1)) {
 		HideMark()
 		return
 	}
