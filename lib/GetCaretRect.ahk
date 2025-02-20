@@ -353,7 +353,11 @@ end:
 			, "ptr", -16 + NumPut("int64", idObject == 0xFFFFFFF0 ? 0x46000000000000C0 : 0x719B3800AA000C81, NumPut("int64", idObject == 0xFFFFFFF0 ? 0x0000000000020400 : 0x11CF3C3D618736E0, IID := Buffer(16)))
 			, "ptr*", oAcc := ComValue(9, 0)) = 0 {
 			x := Buffer(4), y := Buffer(4), w := Buffer(4), h := Buffer(4)
-			oAcc.accLocation(ComValue(0x4003, x.ptr, 1), ComValue(0x4003, y.ptr, 1), ComValue(0x4003, w.ptr, 1), ComValue(0x4003, h.ptr, 1), 0)
+			try {
+				oAcc.accLocation(ComValue(0x4003, x.ptr, 1), ComValue(0x4003, y.ptr, 1), ComValue(0x4003, w.ptr, 1), ComValue(0x4003, h.ptr, 1), 0)
+			} catch as e {
+				return false
+			}
 			X := NumGet(x, 0, "int"), Y := NumGet(y, 0, "int"), W := NumGet(w, 0, "int"), H := NumGet(h, 0, "int")
 			if (X | Y) != 0 {
 				left := X ; should be 1px less?
@@ -463,7 +467,7 @@ end:
 		className := ""
 		try {
 			className := WinGetClass(hwnd)
-		} catch {
+		} catch as e {
 			className := "unknown" ; better than an empty string
 		}
 		return className
@@ -473,7 +477,7 @@ end:
 		hwnd := -1
 		try {
 			hwnd := WinGetID("A") ; attempt to get HWND
-		} catch {
+		} catch as e {
 			hwnd := 0
 		}
 		return hwnd

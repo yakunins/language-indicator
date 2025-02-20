@@ -105,7 +105,7 @@ class ActiveMonitor {
 		hwnd := -1
 		try {
 			hwnd := WinGetID("A") ; attempt to get HWND
-		} catch {
+		} catch as e {
 			hwnd := 0
 		}
 		return hwnd
@@ -131,7 +131,7 @@ class ActiveMonitor {
 				"Ptr", RECTPlus,                    ;-- pvAttribute
 				"UInt", 16,                          ;-- cbAttribute
 				"UInt")
-		} catch {
+		} catch as e {
 			return false
 		}
 
