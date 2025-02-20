@@ -25,7 +25,7 @@ GetCaretRect(&left?, &top?, &right?, &bottom?, &cartetDetectMethod?) {
 	}
 
 	; match caret' position detection method to active app
-	if className ~= "^(?:Windows|Microsoft)\.UI\..+" ; metroUI aka windows settings apps
+	if className ~= "^(?:Windows|Microsoft)\.UI\..+"
 		fns := [getCaretPosFromUIA, getCaretPosFromHook, getCaretPosFromMSAA_2]
 	else if className ~= "^HwndWrapper\[PowerShell_ISE\.exe;;[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\]" ; PowerShell-ISE
 		fns := [getCaretPosFromWpfCaret, getCaretPosFromHook]
