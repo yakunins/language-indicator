@@ -7,8 +7,7 @@ AHK v2 script to detect text caret' position, with the use of following techniqu
 	5. getCaretPosFromHook (some .NET apps, Adobe Indesign)
 */
 
-#Requires AutoHotkey v2.0
-
+#requires AutoHotkey v2.0
 #include ActiveMonitor.ahk
 #include Jsons.ahk
 
@@ -25,7 +24,7 @@ GetCaretRect(&left?, &top?, &right?, &bottom?, &cartetDetectMethod?) {
 	}
 
 	; match caret' position detection method to active app
-	if className ~= "^(?:Windows|Microsoft)\.UI\..+" ; metroUI aka windows settings apps
+	if className ~= "^(?:Windows|Microsoft)\.UI\..+"
 		fns := [getCaretPosFromUIA, getCaretPosFromHook, getCaretPosFromMSAA_2]
 	else if className ~= "^HwndWrapper\[PowerShell_ISE\.exe;;[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\]" ; PowerShell-ISE
 		fns := [getCaretPosFromWpfCaret, getCaretPosFromHook]

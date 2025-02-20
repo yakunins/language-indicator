@@ -1,9 +1,8 @@
-#Requires AutoHotkey v2.0
-
+#requires AutoHotkey v2.0
 #include GetInputLocaleId.ahk
 #include HasValue.ahk
 
-global localesArray := [GetInputLocaleId()] ; init at script start with value of input locale ID 
+global localesArray := [GetInputLocaleId()] ; init at script start with value of input locale ID
 global localeIndex := -1 ; init, later 1, 2, ...
 
 GetInputLocaleIndex() {

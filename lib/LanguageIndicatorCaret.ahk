@@ -2,7 +2,7 @@
 ; Script is lookin into "./carets/" folder for files like "1-capslock.png", "2.png", etc.
 
 #SingleInstance Force
-#Requires AutoHotkey v2.0
+#requires AutoHotkey v2.0
 
 #include DebugCaret.ahk
 #include GetCapslockState.ahk

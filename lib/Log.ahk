@@ -1,4 +1,4 @@
-#Requires AutoHotkey v2.0
+#requires AutoHotkey v2.0
 #include Jsons.ahk
 
 Log(val, x := 500, y := 500, t := -500) {
