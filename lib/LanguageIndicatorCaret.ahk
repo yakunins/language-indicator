@@ -33,7 +33,7 @@ RunCaret() {
 CheckCaret() {
 	global
 	crt.markPath := GetImagePath() ; returns "\carets\2.png" is file exist and language=2, otherwise -1
-	if (crt.markPath == -1) {
+	if (crt.markPath == -1 or crt.markPath == 0) {
 		HideMark()
 		return
 	}
