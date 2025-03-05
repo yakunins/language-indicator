@@ -17,14 +17,15 @@ Written for [AHK v2](https://www.autohotkey.com/docs/v2/)
 ## Customization
 
 1. Download or create [`carets`](./carets) or [`cursors`](./cursors) folders
-2. Remove unwanted or add your own carets or mouse cursors within [`carets`](./carets) or [`cursors`](./cursors) folders
-3. Use the following naming convention:
+2. Since `cursors` folder exist, embedded images won't be used (see [`./lib/UseBase64Image.ahk`](./lib/UseBase64Image.ahk))
+3. Remove unwanted or add your own carets or mouse cursors within [`carets`](./carets) or [`cursors`](./cursors) folders
+4. Use the following naming convention:
 
-| Input                 | Mouse Cursor               | Text Caret Mark           |
-| :-------------------- | :------------------------- | :------------------------ |
-| language 2            | `./cursors/2.cur`          | `./carets/2.png`          |
-| language 1 + capslock | `./cursors/1-capslock.cur` | `./carets/1-capslock.png` |
-| language 2 + capslock | `./cursors/2-capslock.cur` | `./carets/2-capslock.png` |
+| Input                  | Mouse Cursor               | Text Caret Mark           |
+| :--------------------- | :------------------------- | :------------------------ |
+| Language 2             | `./cursors/2.cur`          | `./carets/2.png`          |
+| Language 1 + Caps Lock | `./cursors/1-capslock.cur` | `./carets/1-capslock.png` |
+| Language 2 + Caps Lock | `./cursors/2-capslock.cur` | `./carets/2-capslock.png` |
 
 Tips:
 
