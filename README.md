@@ -35,7 +35,7 @@ Tips:
 -   Supported caret mark formats: PNG, GIF
 -   Supported cursor file formats: CUR, ANI, ICO
 -   Create your own cursor with [Sib Cursor Editor](http://www.sibcode.com/cursor-editor/)
--   Cursor variants included (see [`cursor/ibeam-variants`](./cursor/ibeam-variants/), [`carets/variants`](./carets/variants/)):
+-   Cursor variants included:
 
 <img align="left" src="img/ibeam-default.jpg" alt="default i-beam cursor" />
 <img align="left" src="img/ibeam-dot-green.jpg" alt="i-beam cursor with dot" />
