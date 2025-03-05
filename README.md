@@ -20,11 +20,11 @@ Written for [AHK v2](https://www.autohotkey.com/docs/v2/)
 2. Remove unwanted or add your own carets or mouse cursors within [`carets`](./carets) or [`cursors`](./cursors) folders
 3. Use the following naming convention:
 
-| Input                 | Mouse Cursor             | Text Caret Mark         |
-| --------------------- | ------------------------ | ----------------------- |
-| language 2            | `cursors/2.cur`          | `carets/2.png`          |
-| language 1 + capslock | `cursors/1-capslock.cur` | `carets/1-capslock.png` |
-| language 2 + capslock | `cursors/2-capslock.cur` | `carets/2-capslock.png` |
+| Input                 | Mouse Cursor               | Text Caret Mark           |
+| :-------------------- | :------------------------- | :------------------------ |
+| language 2            | `./cursors/2.cur`          | `./carets/2.png`          |
+| language 1 + capslock | `./cursors/1-capslock.cur` | `./carets/1-capslock.png` |
+| language 2 + capslock | `./cursors/2-capslock.cur` | `./carets/2-capslock.png` |
 
 Tips:
 
@@ -41,4 +41,4 @@ Tips:
 <img align="left" src="img/ibeam-arrow-up-blue.jpg" alt="i-beam cursor with arrow up" />
 <img src="img/ibeam-g.jpg" alt="i-beam cursor with letter g" />
 
-Enjoy! [🍩 Donut.](https://www.paypal.com/donate/?business=KXM47EKBXFV4S&no_recurring=0&item_name=funding+of+github.com%2Fyakunins&currency_code=USD)
+Enjoy! → [🍩 Donut](https://www.paypal.com/donate/?business=KXM47EKBXFV4S&no_recurring=0&item_name=funding+of+github.com%2Fyakunins&currency_code=USD)
