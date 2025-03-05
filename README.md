@@ -4,9 +4,11 @@
 
 ## Per-Language Styling of Text Caret and Mouse Cursor
 
-Keeps track of your current language (or input method, keyboard layout) and changes [caret](https://en.wikipedia.org/wiki/Caret_navigation) and [text selection mouse cursor](<https://en.wikipedia.org/wiki/Cursor_(user_interface)#I-beam_pointer>).  
-It works in most envs, including consoles and Universal Windows Apps (aka Metro apps).  
-Exceptions are Adobe Indesign and some .NET MAUI apps.  
+Keeps track of your current language and changes [caret](https://en.wikipedia.org/wiki/Caret_navigation) and [text selection mouse cursor](<https://en.wikipedia.org/wiki/Cursor_(user_interface)#I-beam_pointer>).
+
+It works in most envs, including consoles and Universal Windows Apps, aka Metro apps.  
+Exceptions are Adobe Indesign and some .NET MAUI apps.
+
 Written for [AHK v2](https://www.autohotkey.com/docs/v2/).
 
 ## Installation
@@ -14,7 +16,7 @@ Written for [AHK v2](https://www.autohotkey.com/docs/v2/).
 1. Download [`language-indicator.exe`](language-indicator.exe), a compiled version of the script
 2. Download and run [`install.cmd`](install.cmd) to create shortcut at startup folder
 
-P.S. Standalone version of the script creates a marker near the mouse cursor <ins>with lag</ins>. Since cursors cannot be embedded directly into an AHK script, this lag can be eliminated by adding `cursors` folder. See below for details.
+Standalone version of the script creates a marker near the mouse cursor <ins>with lag</ins>. Since cursors cannot be embedded directly into an AHK script, this lag can be eliminated by adding `cursors` folder. See below for details.
 
 ## Customization
 
