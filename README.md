@@ -43,4 +43,4 @@ Tips:
 
 Enjoy!
 
-# [→ 🍩](https://www.paypal.com/donate/?business=KXM47EKBXFV4S&no_recurring=0&item_name=funding+of+github.com%2Fyakunins&currency_code=USD)
+<span style="font-size: 200%">[🍩](https://www.paypal.com/donate/?business=KXM47EKBXFV4S&no_recurring=0&item_name=funding+of+github.com%2Fyakunins&currency_code=USD)</span><br />Donut
