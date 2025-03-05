@@ -7,19 +7,20 @@
 Keeps track of your current language (or input method, keyboard layout) and changes [caret](https://en.wikipedia.org/wiki/Caret_navigation) and [text selection mouse cursor](<https://en.wikipedia.org/wiki/Cursor_(user_interface)#I-beam_pointer>).  
 It works in most envs, including consoles and Universal Windows Apps (aka Metro apps).  
 Exceptions are Adobe Indesign and some .NET MAUI apps.  
-Written for [AHK v2](https://www.autohotkey.com/docs/v2/)
+Written for [AHK v2](https://www.autohotkey.com/docs/v2/).
 
 ## Installation
 
-1. Download [`language-indicator.exe`](language-indicator.exe), a compiled version (AHKv2-64) of the script
+1. Download [`language-indicator.exe`](language-indicator.exe), a compiled version of the script
 2. Download and run [`install.cmd`](install.cmd) to create shortcut at startup folder
+
+P.S. Standalone version of the script creates a marker near the mouse cursor <ins>with lag</ins>. Since cursors cannot be embedded directly into an AHK script, this lag can be eliminated by adding `cursors` folder. See below for details.
 
 ## Customization
 
-1. Download or create [`carets`](./carets) or [`cursors`](./cursors) folders
-2. Since `cursors` folder exist, embedded images won't be used (see [`./lib/UseBase64Image.ahk`](./lib/UseBase64Image.ahk))
-3. Remove unwanted or add your own carets or mouse cursors within [`carets`](./carets) or [`cursors`](./cursors) folders
-4. Use the following naming convention:
+1. Download or create [`carets`](./carets) or [`cursors`](./cursors) folders (since `cursors` folder exist, embedded images won't be used, see [`./lib/UseBase64Image.ahk`](./lib/UseBase64Image.ahk))
+2. Remove unwanted or add your own carets or mouse cursors within [`carets`](./carets) or [`cursors`](./cursors) folders
+3. Use the following naming convention:
 
 | Input                  | Mouse Cursor               | Text Caret Mark           |
 | :--------------------- | :------------------------- | :------------------------ |
