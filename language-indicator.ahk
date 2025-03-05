@@ -1,7 +1,14 @@
-#SingleInstance Force
 #requires AutoHotkey v2.0
-#include lib\LanguageIndicatorCursor.ahk
-#include lib\LanguageIndicatorCaret.ahk
+#singleinstance force
 
-version := "0.3"
-A_IconTip := "Language Indicator v" . version
+; ProcessSetPriority("Realtime")
+
+global languageIndicator := {
+    updatePeriod: 100,
+    version: "0.4"
+}
+
+#include lib\LanguageIndicatorCaret.ahk
+#include lib\LanguageIndicatorCursor.ahk
+
+A_IconTip := "Language Indicator v" . languageIndicator.version

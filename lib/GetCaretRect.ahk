@@ -497,7 +497,7 @@ end:
 	}
 
 	static getActiveHWND() {
-		hwnd := -1
+		hwnd := 0
 		try {
 			hwnd := WinGetID("A") ; attempt to get HWND
 		} catch as e {

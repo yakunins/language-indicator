@@ -2,11 +2,11 @@
 #include GetInputLocaleId.ahk
 #include HasValue.ahk
 
-global localesArray := [GetInputLocaleId()] ; init at script start with value of input locale ID
-global localeIndex := -1 ; init, later 1, 2, ...
+global localesArray := [GetInputLocaleId()] ; start with one value of initial input locale ID
 
+; populates localesArray
 GetInputLocaleIndex() {
-	global
+	global localesArray
 	localeId := GetInputLocaleId() ; docs.microsoft.com/en-us/windows/win32/intl/language-identifiers
 
 	if !localeId {
@@ -15,9 +15,9 @@ GetInputLocaleIndex() {
 
 	index := HasValue(localesArray, localeId)
 
-	; add localeId into localesArray
+	; push localeId into localesArray
 	if !index {
-		localesArray.Push localeId
+		localesArray.Push(localeId)
 		index := localesArray.length
 	}
 
