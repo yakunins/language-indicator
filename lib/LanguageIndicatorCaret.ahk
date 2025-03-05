@@ -4,15 +4,14 @@
 #singleinstance force
 #requires AutoHotkey v2.0
 
-f1:: ExitApp
-
+#include DebugCaretPosition.ahk
 #include GetCapslockState.ahk
 #include GetInputLocaleIndex.ahk
 #include GetCaretRect.ahk
 #include ImagePainter.ahk ; based on ImagePut.ahk
 #include UseBase64Image.ahk
 #include OnFrameRate.ahk
-#include DebugCaretPosition.ahk
+#include TickCount.ahk
 #include Log.ahk
 
 if !IsSet(cfg)
@@ -20,16 +19,22 @@ if !IsSet(cfg)
 
 cfg.caret := {
 	debug: false,
+	debugCaretPosition: false,
 	files: {
+		capslockSuffix: "-capslock",
+		folderExistCheckPeriod: 1000, ; optimization?
 		folder: A_ScriptDir . "\carets\",
 		extensions: [".png", ".gif"]
 	},
 	markMargin: { x: 1, y: -1 },
-	updatePeriod: 50,
+	updatePeriod: 100,
 }
 
+if IsSet(languageIndicator)
+	cfg.caret.updatePeriod := languageIndicator.updatePeriod
+
 if !IsSet(state)
-	global state := {}
+	global state := { prev: {} }
 InitCaretState()
 
 global caretMark := ImagePainter()
@@ -38,79 +43,66 @@ caretMark.margin := cfg.caret.markMargin
 RunCaret()
 RunCaret() {
 	SetTimer(CheckCaret, cfg.caret.updatePeriod)
-	OnExit(ExitFunc)
+	OnExit(CaretExitFunc)
 }
 
 ; Checks if caret reflect current input locale or capslock state
 CheckCaret() {
-	global cfg, state
-
-	state.prev := state.Clone() ; copying
-	state.prev.DeleteProp("prev")
-	state.locale := GetInputLocaleIndex()
-	state.capslock := GetCapslockState()
-
-	; performance optimization?
-	if (state.locale == state.prev.locale and
-		state.capslock == state.prev.capslock) {
-		if (state.caretMarkName == "")
-			return ; no changes detected
-	}
-
-	if !DirExist(cfg.caret.files.folder) ; no folder, then UseBase64Image.ahk
-		UseEmbeddedImage() ; use embedded base64 image
-	else
-		UseImageFromFile() ; use caret mark from file system
+	global state
+	UpdateCaretState()
+	CaretsFolderExist()
+		? UseCaretMarkFile() ; use caret mark from file system
+		: UseCaretMarkEmbedded() ; use embedded base64 image
 }
 
-UseEmbeddedImage() {
-	state.caretMarkName := GetMarkName()
+onFrame := OnFrameRateScheduler.Increase() ; must be decreased if `onFrame.ScheduleRun` not used in code below
+UseCaretMarkEmbedded() {
+	global state
+	state.caretMarkName := GetCaretMarkName(state.locale, state.capslock)
 	if (state.caretMarkName == "") {
-		caretMark.RemoveImage()
+		caretMark.RemoveWindow()
 		return
 	}
-
-	mark := UseBase64Image(state.caretMarkName) ; { name: <str>, image: <path | base64> }
-	PaintCaretMark(mark) ; repaint mark every ~cfg.caret.updatePeriod...
-	OnFrameRate(() => PaintCaretMark(mark), cfg.caret.updatePeriod) ; ...repaint mark on frames between
+	mark := UseBase64Image(state.caretMarkName) ; { name: <str>, image: <0 | path | base64> }
+	PaintCaretMark(mark) ; repaint mark every ~cfg.updatePeriod...
+	onFrame.ScheduleRun(() => PaintCaretMark(mark), "caret", cfg.caret.updatePeriod) ;...repaint mark on frames between
 }
-
-UseImageFromFile() {
-	state.caretMarkName := GetMarkName()
+UseCaretMarkFile() {
+	global state
+	state.caretMarkName := GetCaretMarkName(state.locale, state.capslock)
 	if (state.caretMarkName == "") {
-		caretMark.RemoveImage()
+		caretMark.RemoveWindow()
 		return
 	}
-
 	mark := { name: state.caretMarkName, image: GetCaretMarkFile() } ; { name: <str>, image: <path | base64> }
-	PaintCaretMark(mark) ; repaint mark every ~cfg.caret.updatePeriod...
-	OnFrameRate(() => PaintCaretMark(mark), cfg.caret.updatePeriod) ; ...repaint mark on frames between
+	PaintCaretMark(mark) ; repaint mark every ~cfg.updatePeriod...
+	onFrame.ScheduleRun(() => PaintCaretMark(mark), "caret", cfg.caret.updatePeriod) ;...repaint mark on frames between
 }
 
 ; (no capslock + initial language) → 0
 ; (capslock + initial language) → "arrow_white_9px"
 ; (no capslock + second language) → "circle_red_9px"
-GetMarkName() {
-	global state
-	if (state.locale == 1 and state.capslock == 0)
+GetCaretMarkName(locale, capslock) {
+	if (locale == 1 and capslock == 0)
 		return "" ; no mark
 
+	; see UseBase64Image.ahk
 	figures := Map("0", "circle", "1", "arrow")
 	colors := Map("1", "white", "2", "red", "3", "green", 4, "blue")
 	sizes := ["9px", "12px"]
 
-	figure := figures.Get("" . state.capslock, "undefined")
-	color := colors.Get("" . state.locale, "undefined")
+	figure := figures.Get("" . capslock, "undefined")
+	color := colors.Get("" . locale, "undefined")
 	size := sizes[2]
 
 	imageName := figure "_" color "_" size
 	return imageName
 }
 
-
 GetCaretMarkFile() {
+	global cfg, state
 	for ext in cfg.caret.files.extensions {
-		if (GetCapslockState() == 1) {
+		if state.capslock {
 			path := cfg.caret.files.folder . state.locale . cfg.caret.files.capslockSuffix . ext ; e.g. "carets\1-capslock.png"
 			if (FileExist(path))
 				return path ; capslock-suffixed file to be used
@@ -124,14 +116,17 @@ GetCaretMarkFile() {
 }
 
 ; markObj := { name: ..., image: ...}
-PaintCaretMark(markObj, cursor := "IBeam") {
-	global cfg, caretMark
+PaintCaretMark(markObj) {
+	global cfg, caretMark, state
 
 	if (!markObj.image or 2 > StrLen(markObj.image)) { ; no image
-		caretMark.RemoveImage()
+		caretMark.RemoveWindow()
 		caretMark.Clear()
 		return
 	}
+
+	; not used, only for debugging
+	state.caretMarkImage := SubStr(markObj.image, 1, 20) . "..."
 
 	top := -1, left := -1, bottom := -1, right := -1
 	w := 0, h := 0
@@ -139,11 +134,11 @@ PaintCaretMark(markObj, cursor := "IBeam") {
 	w := right - left
 	h := bottom - top
 
-	if (cfg.caret.debug)
+	if cfg.caret.debugCaretPosition
 		DebugCaretPosition(&left, &top, &right, &bottom, &detectMethod)
 
 	if (InStr(detectMethod, "failure") or (w < 1 and h < 1)) {
-		caretMark.HideImage()
+		caretMark.HideWindow()
 		return
 	}
 
@@ -158,14 +153,50 @@ PaintCaretMark(markObj, cursor := "IBeam") {
 
 InitCaretState() {
 	global state
-	state.locale := GetInputLocaleIndex()
-	state.capslock := GetCapslockState()
-	state.caretMarkName := ""
-	state.caretMarkImage := ""
-	state.prev := state
+	if !state.HasOwnProp("prev")
+		state.prev := {}
+	if !state.HasOwnProp("locale")
+		state.locale := 1
+	if !state.HasOwnProp("capslock")
+		state.capslock := 0
+	if !state.HasOwnProp("caretMarkName")
+		state.caretMarkName := ""
+	if !state.HasOwnProp("caretMarkImage")
+		state.caretMarkImage := ""
 }
 
-ExitFunc(ExitReason, ExitCode) {
-	if !(ExitReason ~= "^(?i:Logoff|Shutdown)$")
-		caretMark.RemoveImage()
+UpdateCaretState() {
+	global state
+	state.prev.locale := state.locale
+	state.locale := GetInputLocaleIndex()
+
+	state.prev.capslock := state.capslock
+	state.capslock := GetCapslockState()
+
+	if CaretsFolderExist() {
+		state.prev.caretMarkImage := state.caretMarkImage
+		state.caretMarkImage := GetCaretMarkFile()
+
+		state.prev.caretMarkName := state.caretMarkName
+		state.caretMarkName := ""
+	} else {
+		state.prev.caretMarkName := state.caretMarkName
+		state.caretMarkName := GetCaretMarkName(state.locale, state.capslock)
+
+		state.prev.caretMarkImage := state.caretMarkImage
+		state.caretMarkImage := ""
+	}
 }
+
+CaretsFolderExist := UseCached(CheckCaretsFolderExist, cfg.caret.files.folderExistCheckPeriod)
+CheckCaretsFolderExist() {
+	return DirExist(cfg.caret.files.folder)
+}
+
+CaretExitFunc(ExitReason, ExitCode) {
+	if !(ExitReason ~= "^(?i:Logoff|Shutdown)$")
+		caretMark.RemoveWindow()
+}
+
+if cfg.caret.debug
+	Log(cfg)

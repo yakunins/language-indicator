@@ -2,7 +2,8 @@
 #include Jsons.ahk
 
 ; simple version
-Log(val, x := 500, y := 500, t := -500) {
+Log(val, x := 400, y := 200, t := -1000) {
+	CoordMode("ToolTip", "Screen")
 	if (Type(val) == "String") {
 		ToolTip(val, x, y)
 	} else {
@@ -20,7 +21,7 @@ ttcfg := {
 	shift: 40
 }
 
-Logg(val, x := "", y := "", t := -500) {
+Logg(val, x := "", y := "", t := -1000) {
 	global ttstt
 
 	pos := { x: x, y: y }

@@ -10,6 +10,7 @@ AHK v2 script to detect text caret' position, with the use of following techniqu
 #requires AutoHotkey v2.0
 #include ActiveMonitor.ahk
 #include Jsons.ahk
+#include Log.ahk
 
 ; credits to https://github.com/Tebayaki/AutoHotkeyScripts/blob/main/lib/GetCaretPosEx/GetCaretPosEx.ahk
 GetCaretRect(&left?, &top?, &right?, &bottom?, &cartetDetectMethod?) {
@@ -29,7 +30,7 @@ GetCaretRect(&left?, &top?, &right?, &bottom?, &cartetDetectMethod?) {
 	else if className ~= "^HwndWrapper\[PowerShell_ISE\.exe;;[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\]" ; PowerShell-ISE
 		fns := [getCaretPosFromWpfCaret, getCaretPosFromHook]
 	else
-		fns := [getCaretPosFromMSAA_2, getCaretPosFromUIA, getCaretPosFromWpfCaret, getCaretPosFromHook] ;
+		fns := [getCaretPosFromMSAA_2, getCaretPosFromUIA, getCaretPosFromWpfCaret, getCaretPosFromHook]
 
 	for fn in fns {
 		if fn() {
@@ -134,8 +135,6 @@ end:
 			right := left + Round(rects[2])
 			bottom := top + Round(rects[3])
 			w := right - left
-			if (w < 1 and w > -1)
-				right := left + 1
 			cartetDetectMethod := "getCaretPosFromUIA"
 			return true
 		}
@@ -251,8 +250,8 @@ end:
 		getRect(rect, &left, &top, &right, &bottom)
 		scaleRect(getWinScale(hwnd), &left, &top, &right, &bottom)
 		fixDPIScaleHook(&left, &top, &right, &bottom)
-		if (left == right)
-			right := left + 1 ; set positive width instead of zero
+		if (left == right and bottom - top > 0)
+			right := left + 1 ; set positive width instead of zero when height > 0
 
 		cartetDetectMethod := "getCaretPosFromHook"
 		return true
@@ -347,18 +346,36 @@ end:
 	}
 
 	getCaretPosFromMSAA_2() {
-		static _ := DllCall("LoadLibrary", "Str", "oleacc", "Ptr")
+		if (!hOleacc := DllCall("LoadLibraryW", "Str", "oleacc.dll", "Ptr"))
+			return false
+
 		idObject := 0xFFFFFFF8 ; OBJID_CARET
-		if DllCall("oleacc\AccessibleObjectFromWindow", "ptr", WinExist("A"), "uint", idObject &= 0xFFFFFFFF
-			, "ptr", -16 + NumPut("int64", idObject == 0xFFFFFFF0 ? 0x46000000000000C0 : 0x719B3800AA000C81, NumPut("int64", idObject == 0xFFFFFFF0 ? 0x0000000000020400 : 0x11CF3C3D618736E0, IID := Buffer(16)))
-			, "ptr*", oAcc := ComValue(9, 0)) = 0 {
+		IID_IAccessible := -16 + NumPut("int64", idObject == 0xFFFFFFF0 ? 0x46000000000000C0 : 0x719B3800AA000C81
+			, NumPut("int64", idObject == 0xFFFFFFF0 ? 0x0000000000020400 : 0x11CF3C3D618736E0
+				, IID := Buffer(16))) ; wtf!
+
+		if DllCall("oleacc\AccessibleObjectFromWindow"
+			, "ptr", hwnd
+			, "uint", idObject &= 0xFFFFFFFF
+			, "ptr", IID_IAccessible
+			, "ptr*", oAcc := ComValue(9, 0)) == 0 {
+
 			x := Buffer(4), y := Buffer(4), w := Buffer(4), h := Buffer(4)
+
 			try {
 				oAcc.accLocation(ComValue(0x4003, x.ptr, 1), ComValue(0x4003, y.ptr, 1), ComValue(0x4003, w.ptr, 1), ComValue(0x4003, h.ptr, 1), 0)
 			} catch as e {
 				return false
 			}
-			X := NumGet(x, 0, "int"), Y := NumGet(y, 0, "int"), W := NumGet(w, 0, "int"), H := NumGet(h, 0, "int")
+
+			X := NumGet(x, 0, "int"),
+				Y := NumGet(y, 0, "int"),
+				W := NumGet(w, 0, "int"),
+				H := NumGet(h, 0, "int")
+
+			if (W < 1)
+				H := 0 ; sure? chrome fix in case no caret to return {w:0, h:20}
+
 			if (X | Y) != 0 {
 				left := X ; should be 1px less?
 				right := left + W
@@ -372,14 +389,20 @@ end:
 		return false
 	}
 
-	; something wrong here in case of multiple monitors, inside DllCall(ScreenToClient)
+	; something wrong here in case of multiple monitors; within DllCall(ScreenToClient)
 	getCaretPosFromMSAA_1() {
 		if !hOleacc := DllCall("LoadLibraryW", "str", "oleacc.dll", "ptr") {
 			return false
 		}
 		hOleacc := { Ptr: hOleacc, __Delete: (_) => DllCall("FreeLibrary", "ptr", _) }
 		static IID_IAccessible := guidFromString("{618736e0-3c3d-11cf-810c-00aa00389b71}")
-		if !DllCall("oleacc\AccessibleObjectFromWindow", "ptr", hwnd, "uint", 0xfffffff8, "ptr", IID_IAccessible, "ptr*", accCaret := ComValue(13, 0), "int") {
+
+		if !DllCall("oleacc\AccessibleObjectFromWindow"
+			, "ptr", hwnd
+			, "uint", 0xfffffff8
+			, "ptr", IID_IAccessible
+			, "ptr*", accCaret := ComValue(13, 0), "int") {
+
 			if A_PtrSize == 8 {
 				varChild := Buffer(24, 0)
 				NumPut("ushort", 3, varChild)
@@ -397,7 +420,7 @@ end:
 				scaleRect(getWinScale(hwnd), &left, &top, &right, &bottom)
 				clientToScreenRect(hwnd, &left, &top, &right, &bottom)
 				fixDPIScaleMSAA(&left, &top, &right, &bottom)
-				cartetDetectMethod := "getCaretPosFromMSAA"
+				cartetDetectMethod := "getCaretPosFromMSAA_1"
 				return true
 			}
 		}

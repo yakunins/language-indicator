@@ -32,7 +32,6 @@ class ImagePainter {
         }
 
         if (this.window != -1) { ; already painted
-            ; Log(this.img, , , 10000)
             if (this.img.x == this.img.prev.x and
                 this.img.y == this.img.prev.y and
                 this.img.name == this.img.prev.name) {
@@ -41,7 +40,7 @@ class ImagePainter {
 
             if (this.img.name != this.img.prev.name or
                 this.img.image != this.img.prev.image) {
-                this.RemoveImage() ; different image, init required
+                this.RemoveWindow() ; different image, init required
             }
         }
 
@@ -81,17 +80,16 @@ class ImagePainter {
         image_hwnd := ImageShow(this.img.image, , [0, 0], 0x40000000 | 0x10000000 | 0x8000000, , display.hwnd)
     }
 
-    RemoveImage() {
+    RemoveWindow() {
         if this.window != -1 {
             this.window.Destroy()
             this.window := -1
         }
     }
 
-    HideImage() {
+    HideWindow() {
         if this.window != -1 {
             this.window.Hide()
         }
     }
-
 }

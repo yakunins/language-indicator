@@ -22,7 +22,7 @@ DebugCaretPosition(&l, &t, &r, &b, &detectMethod) {
 	}
 	method := 'detection method:  ' detectMethod "`n"
 	monitorID := ActiveMonitor.init(&monL, &monT, &monR, &monB)
-	posData .= "caret:  l=" l "  t=" t "  r=" r "  b=" b "`n"
+	posData .= "caret:  l=" l "  t=" t "  W=" r - l "  H=" b - t "`n"
 	scale := ActiveMonitor.getActiveWinScale()
 	monitorData := "active monitor:  id=" monitorID "  scale=" scale "  l=" monL "  t=" monT "  r=" monR "  b=" monB "`n"
 	windowData := "window:  l=" winRect.l "  t=" winRect.t "  r=" winRect.r "  b=" winRect.b "`n"
