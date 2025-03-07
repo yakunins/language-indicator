@@ -13,7 +13,7 @@ Written for [AHK v2](https://www.autohotkey.com/docs/v2/).
 
 ## Installation
 
-1. Download [`language-indicator.exe`](language-indicator.exe), a compiled version of the script
+1. Download [`language-indicator.exe`](language-indicator.exe), a compiled version of the script (or compile with [ahk2exe](https://github.com/AutoHotkey/Ahk2Exe))
 2. Download and run [`install.cmd`](install.cmd) to create shortcut at startup folder
 
 Standalone version of the script creates a marker near the mouse cursor <ins>with lag</ins>. Since cursors cannot be embedded directly into an AHK script, this lag can be eliminated by adding `cursors` folder. See below for details.
