@@ -25,10 +25,13 @@ OnFrameRate(fn, timeLimit := 100) {
 GetFps(defaultFrameRate := 60) {
     ; time-consuming operation
     queryEnum := ComObjGet('winmgmts:').ExecQuery('Select * from Win32_VideoController')._NewEnum()
-    if queryEnum(&p) {
-        current := p.CurrentRefreshRate
-        if (current > 10)
-            return current
+    try {
+        q := queryEnum(&p)
+        if q and p != "" {
+            current := p.CurrentRefreshRate
+            if (current > 10)
+                return current
+        }
     }
     return Floor(defaultFrameRate)
 }
