@@ -43,4 +43,5 @@ Tips:
 <img align="left" src="img/ibeam-arrow-up-blue.jpg" alt="i-beam cursor with arrow up" />
 <img src="img/ibeam-g.jpg" alt="i-beam cursor with letter g" />
 
-Enjoy! → [🍩 Donut](https://www.paypal.com/donate/?business=KXM47EKBXFV4S&no_recurring=0&item_name=funding+of+github.com%2Fyakunins&currency_code=USD)
+Enjoy!  
+🍩 A donut, [maybe](https://www.paypal.com/donate/?business=KXM47EKBXFV4S&no_recurring=0&item_name=funding+of+github.com%2Fyakunins&currency_code=USD)?
