@@ -26,7 +26,8 @@ class ImagePainter {
     }
 
     Paint() {
-        if (this.img.x == "" or this.img.y == "" or this.img.image == "") {
+        if (this.img.image == "" or !this.img.image) or
+            (this.img.x == "" or this.img.y == "") {
             this.Clear()
             return
         }

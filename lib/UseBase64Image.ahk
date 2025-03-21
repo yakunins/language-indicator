@@ -27,7 +27,7 @@ global base64images := Map(
 
 UseBase64Image(name := "") {
 	if (!name or name == "")
-		return { image: 0, name: name }
+		return { image: "", name: name }
 
 	if base64images.Has(name) {
 		; exact name match
