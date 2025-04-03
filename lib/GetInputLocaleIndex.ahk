@@ -5,7 +5,7 @@
 global localesArray := [GetInputLocaleId()] ; start with one value of initial input locale ID
 
 ; populates localesArray
-GetInputLocaleIndex() {
+GetInputLocaleIndex(&lang_id:=0) {
 	global localesArray
 	localeId := GetInputLocaleId() ; docs.microsoft.com/en-us/windows/win32/intl/language-identifiers
 
@@ -13,6 +13,7 @@ GetInputLocaleIndex() {
 		return 0
 	}
 
+	lang_id := localeId & 0xFFFF ; low word (≝2 byte = 4 hex chars) Language Identifier for the input language docs.microsoft.com/en-us/windows/win32/intl/language-identifiers
 	index := HasValue(localesArray, localeId)
 
 	; push localeId into localesArray
