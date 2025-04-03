@@ -166,9 +166,25 @@ InitCaretState() {
 }
 
 UpdateCaretState() {
+	static last_changed_locale := 0
 	global state
+	lang_id := 0x0000
 	state.prev.locale := state.locale
-	state.locale := GetInputLocaleIndex()
+	state.locale := GetInputLocaleIndex(&lang_id)
+	if   (state.locale != state.prev.locale)
+		|| (state.locale != last_changed_locale){
+		last_changed_locale := state.locale
+		set_lang := False
+		for i, l_id in localesArray {
+			if (lang_id == l_id) {
+				set_lang := True
+				TraySetIcon("img\lang\" languageIndicator.lang_name[i] ".ico",,)
+			}
+		}
+		if !set_lang { ; todo: this is a frequent operation, does it cost much? is it really needed?
+			; TraySetIcon("*",,)
+		}
+	}
 
 	state.prev.capslock := state.capslock
 	state.capslock := GetCapslockState()
