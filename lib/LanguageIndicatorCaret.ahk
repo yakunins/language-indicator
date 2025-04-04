@@ -178,7 +178,11 @@ UpdateCaretState() {
 		for i, l_id in localesArray {
 			if (lang_id == l_id) {
 				set_lang := True
-				TraySetIcon("img\lang\" languageIndicator.lang_name[i] ".ico",,)
+				try {
+					TraySetIcon("img\lang\" langNamesArray[i] ".ico",,)
+				} catch Error as err {
+					TraySetIcon("*",,)
+				}
 			}
 		}
 		if !set_lang { ; todo: this is a frequent operation, does it cost much? is it really needed?
