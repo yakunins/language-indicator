@@ -5,7 +5,8 @@
 
 global languageIndicator := {
     updatePeriod: 100,
-    version: "0.4"
+    version: "0.4",
+  lang_name : [], ;['en-US','ru-RU'],
 }
 
 #include lib\LanguageIndicatorCaret.ahk
