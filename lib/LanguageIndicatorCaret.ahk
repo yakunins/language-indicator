@@ -166,25 +166,53 @@ InitCaretState() {
 }
 
 UpdateCaretState() {
+	static last_changed_locale := 0, last_changed_capslock := 0
 	global state
+	lang_id := 0x0000
 	state.prev.locale := state.locale
-	state.locale := GetInputLocaleIndex()
+	state.locale := GetInputLocaleIndex(&lang_id)
+	is_locale_changed := (state.locale != state.prev.locale  )
+		||                 (state.locale != last_changed_locale)
+	if (is_locale_changed) {
+		last_changed_locale := state.locale
+		set_lang := False
+		for i, l_id in localesArray {
+			if (lang_id == l_id) {
+				set_lang := True
+				try {
+					TraySetIcon("img\lang\" langNamesArray[i] ".ico",,)
+				} catch Error as err {
+					TraySetIcon("*",,)
+				}
+			}
+		}
+		if !set_lang { ; todo: this is a frequent operation, does it cost much? is it really needed?
+			; TraySetIcon("*",,)
+		}
+	}
 
 	state.prev.capslock := state.capslock
 	state.capslock := GetCapslockState()
+	is_caps_changed := (state.capslock != state.prev.capslock  )
+		||               (state.capslock != last_changed_capslock)
+	if (is_caps_changed) {
+		last_changed_capslock := state.capslock
+	}
 
-	if CaretsFolderExist() {
-		state.prev.caretMarkImage := state.caretMarkImage
-		state.caretMarkImage := GetCaretMarkFile()
+	if (is_caps_changed || is_locale_changed) {
+		if CaretsFolderExist() {
+			state.prev.caretMarkImage := state.caretMarkImage
+			state.caretMarkImage := GetCaretMarkFile()
 
-		state.prev.caretMarkName := state.caretMarkName
-		state.caretMarkName := ""
-	} else {
-		state.prev.caretMarkName := state.caretMarkName
-		state.caretMarkName := GetCaretMarkName(state.locale, state.capslock)
+			state.prev.caretMarkName := state.caretMarkName
+			state.caretMarkName := ""
+		} else {
+			state.prev.caretMarkName := state.caretMarkName
+			state.caretMarkName := GetCaretMarkName(state.locale, state.capslock)
 
-		state.prev.caretMarkImage := state.caretMarkImage
-		state.caretMarkImage := ""
+			state.prev.caretMarkImage := state.caretMarkImage
+			state.caretMarkImage := ""
+		}
 	}
 }
 
