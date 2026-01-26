@@ -1,3 +1,4 @@
+; High-precision millisecond timer using QueryPerformanceCounter
 #requires AutoHotkey v2.0
 
 ; A_TickCount precision is 10ms, so QPC...

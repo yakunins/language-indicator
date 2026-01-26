@@ -1,5 +1,6 @@
+; Provides embedded base64-encoded indicator images (arrows and circles)
 #requires AutoHotkey v2.0
-#include Log.ahk
+#include ..\utils\Log.ahk
 
 ; imagesPath := "../img/base64-embedded-images/"
 

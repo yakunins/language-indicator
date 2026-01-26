@@ -1,3 +1,4 @@
+; Checks if a value exists in an array/object and returns its index
 #requires AutoHotkey v2.0
 
 HasValue(haystack, val) {

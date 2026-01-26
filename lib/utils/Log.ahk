@@ -1,3 +1,4 @@
+; Provides tooltip-based logging utilities for debugging
 #requires AutoHotkey v2.0
 #include Jsons.ahk
 

@@ -1,6 +1,7 @@
+; Tracks input locales and returns a sequential index for each unique locale
 #requires AutoHotkey v2.0
 #include GetInputLocaleId.ahk
-#include HasValue.ahk
+#include ..\utils\HasValue.ahk
 
 global localesArray := [GetInputLocaleId()] ; start with one value of initial input locale ID
 

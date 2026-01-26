@@ -1,3 +1,4 @@
+; Displays images in transparent always-on-top windows for visual indicators
 #requires AutoHotkey v2.0
 #include ImagePut.ahk
 

@@ -1,3 +1,4 @@
+; Retrieves the keyboard input locale ID for the active foreground window
 #requires AutoHotkey v2.0
 #DllLoad "Imm32" ; for consoles compatibility, see docs.microsoft.com/en-us/windows/win32/api/imm/
 

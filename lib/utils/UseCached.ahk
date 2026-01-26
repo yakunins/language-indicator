@@ -1,3 +1,4 @@
+; Memoization utility that caches function results with configurable timeout
 #requires AutoHotkey v2.0
 
 /*

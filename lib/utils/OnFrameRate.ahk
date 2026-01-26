@@ -1,3 +1,4 @@
+; Frame rate synchronization utilities for smooth visual updates
 #requires AutoHotkey v2.0
 #include UseCached.ahk
 #include TickCount.ahk

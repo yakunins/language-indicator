@@ -1,5 +1,6 @@
+; Returns the current mouse cursor position in screen coordinates
 #requires AutoHotkey v2.0
-#include Log.ahk
+#include ..\utils\Log.ahk
 
 GetMousePos() {
 	CoordMode "Mouse", "Screen"

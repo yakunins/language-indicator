@@ -1,6 +1,7 @@
+; Debug utility to display caret position, monitor, and window information
 #Requires AutoHotkey v2.0
 
-#include ActiveMonitor.ahk
+#include ..\detection\GetActiveMonitor.ahk
 #include Log.ahk
 
 DebugCaretPosition(&l, &t, &r, &b, &detectMethod) {

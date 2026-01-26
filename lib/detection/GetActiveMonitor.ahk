@@ -1,6 +1,7 @@
+; Provides information about active monitor and window position with DPI awareness
 #Requires AutoHotkey v2.0
-#include Log.ahk
-#include Jsons.ahk
+#include ..\utils\Log.ahk
+#include ..\utils\Jsons.ahk
 
 class ActiveMonitor {
 	static id := -1

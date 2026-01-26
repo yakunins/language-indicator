@@ -1,6 +1,7 @@
+; Predicts mouse position using velocity-based extrapolation to reduce lag
 #requires AutoHotkey v2.0
-#include TickCount.ahk
-#include Log.ahk
+#include ..\utils\TickCount.ahk
+#include ..\utils\Log.ahk
 
 zeroSpeed := { x: 0, y: 0, period: 100 }
 zeroPos := { x: -1, y: -1, time: 0, speed: zeroSpeed }

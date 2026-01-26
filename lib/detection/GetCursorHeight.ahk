@@ -1,3 +1,4 @@
+; Retrieves the system mouse cursor height in pixels
 #requires AutoHotkey v2.0
 
 global defaultCursorHeight := 32

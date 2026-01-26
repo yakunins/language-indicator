@@ -1,0 +1,141 @@
+Starting Language Indicator Test Suite
+===================================================
+
+=== MarkResolver.GetMarkName ===
+  PASS: Default state (locale=1, capslock=0) returns empty
+  PASS: Capslock=1, locale=1 returns arrow_white_12px
+  PASS: Locale=2, capslock=0 returns circle_red_12px
+  PASS: Locale=2, capslock=1 returns arrow_red_12px
+  PASS: Locale=3, capslock=0 returns circle_green_12px
+  PASS: Locale=4, capslock=0 returns circle_blue_12px
+  PASS: Unknown locale returns circle_undefined_12px
+  PASS: Unknown capslock value returns undefined figure
+=== MarkResolver.GetMarkFile ===
+  PASS: Finds 1.png for locale=1
+  PASS: Finds 2.png for locale=2
+  PASS: Finds 2-capslock.png for locale=2, capslock=1
+  PASS: Falls back to 1.png when 1-capslock.png doesn't exist
+  PASS: Returns empty for non-existent locale file
+
+=== IndicatorState.Initialization ===
+  PASS: Initial markName is empty
+  PASS: Initial markImage is empty
+  PASS: Initial markFile is empty
+  PASS: prev property exists
+  PASS: Initial prev.markName is empty
+  PASS: Initial prev.markImage is empty
+  PASS: Initial prev.markFile is empty
+=== IndicatorState.StorePrev ===
+  PASS: prev.markName stored correctly
+  PASS: prev.markImage stored correctly
+  PASS: prev.markFile stored correctly
+  PASS: prev.markName unchanged after current update
+  PASS: prev.markImage unchanged after current update
+=== IndicatorState.HasMarkChanged ===
+  PASS: No change when both current and prev are empty
+  PASS: Change detected when markName differs
+  PASS: No change after StorePrev
+  PASS: Change detected when markImage differs
+  PASS: Change detected when markFile differs
+=== IndicatorState.Clear ===
+  PASS: markName cleared
+  PASS: markImage cleared
+  PASS: markFile cleared
+
+=== InputState.Initialization ===
+  PASS: Initial locale is 1
+  PASS: Initial capslock is 0
+  PASS: prev property exists
+  PASS: Initial prev.locale is 1
+  PASS: Initial prev.capslock is 0
+=== InputState.Update ===
+  PASS: prev.locale set to previous value after Update
+  PASS: prev.capslock set to previous value after Update
+  PASS: locale is a valid number after Update
+  PASS: capslock is 0 or 1 after Update
+=== InputState.HasChanged ===
+  PASS: No change when locale and capslock match prev
+  PASS: Change detected when locale differs
+  PASS: Change detected when capslock differs
+  PASS: No change when both match again
+=== InputState.IsDefault ===
+  PASS: Initial state (locale=1, capslock=0) is default
+  PASS: Not default when locale != 1
+  PASS: Not default when capslock != 0
+  PASS: Not default when both locale and capslock differ
+  PASS: Default when locale=1 and capslock=0
+
+=== CaretIndicator.DefaultConfig ===
+  PASS: Config has debug property
+  PASS: Config has files property
+  PASS: Config has markMargin property
+  PASS: Config has updatePeriod property
+  PASS: files has folder property
+  PASS: files has extensions property
+  PASS: files has capslockSuffix property
+  PASS: Default capslock suffix is -capslock
+  PASS: Default extensions has 2 items
+  PASS: Default updatePeriod is 100
+=== CaretIndicator.Initialization ===
+  PASS: Indicator has cfg
+  PASS: Indicator has state
+  PASS: Indicator has inputState
+  PASS: Indicator has mark (ImagePainter)
+  PASS: Indicator has onFrame scheduler
+  PASS: state is IndicatorState instance
+  PASS: inputState is InputState instance
+  PASS: mark is ImagePainter instance
+=== CaretIndicator.GetPosition ===
+  PASS: Position has left property
+  PASS: Position has top property
+  PASS: Position has right property
+  PASS: Position has bottom property
+  PASS: Position has w (width) property
+  PASS: Position has h (height) property
+  PASS: Position has detectMethod property
+
+=== CursorIndicator.DefaultConfig ===
+  PASS: Config has debug property
+  PASS: Config has files property
+  PASS: Config has markMargin property
+  PASS: Config has updatePeriod property
+  PASS: Config has target property
+  PASS: Config has mousePositionPrediction property
+  PASS: target has cursorId property
+  PASS: target has cursorName property
+  PASS: Default cursorId is 32513 (IDC_IBEAM)
+  PASS: Default cursorName is IBeam
+  PASS: Cursor extensions has 3 items (cur, ani, ico)
+=== CursorIndicator.Initialization ===
+  PASS: Indicator has cfg
+  PASS: Indicator has state
+  PASS: Indicator has inputState
+  PASS: Indicator has mark (ImagePainter)
+  PASS: Indicator has modifiedCursorsCount
+  PASS: Initial modifiedCursorsCount is 0
+=== CursorIndicator.GetPosition ===
+  PASS: Position has x property
+  PASS: Position has y property
+=== CursorIndicator.RevertCursors ===
+  PASS: RevertCursors does nothing when count is 0
+  PASS: RevertCursors resets count to 0
+
+=== LanguageIndicator.DefaultInitialization ===
+  PASS: caretIndicator was created
+  PASS: cursorIndicator was created
+  PASS: caretIndicator is CaretIndicator instance
+  PASS: cursorIndicator is CursorIndicator instance
+  PASS: Version is 0.5
+=== LanguageIndicator.CustomConfig ===
+  PASS: Caret updatePeriod is 50
+  PASS: Cursor updatePeriod is 50
+=== LanguageIndicator.UpdatePeriodPropagation ===
+  PASS: updatePeriod=5 propagates to caret
+  PASS: updatePeriod=5 propagates to cursor
+  PASS: updatePeriod=100 propagates to caret
+  PASS: updatePeriod=100 propagates to cursor
+
+
+=== SUMMARY ===
+Total: 108 | Passed: 108 | Failed: 0
+All tests passed!
