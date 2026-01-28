@@ -43,7 +43,7 @@ UseBase64Image(name := "") {
 			}
 		}
 	}
-	return { image: 0, name: name }
+	return { image: "", name: name }
 }
 
 CleanBase64(b64str) {

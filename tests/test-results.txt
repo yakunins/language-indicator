@@ -17,6 +17,32 @@ Starting Language Indicator Test Suite
   PASS: Falls back to 1.png when 1-capslock.png doesn't exist
   PASS: Returns empty for non-existent locale file
 
+=== UseBase64Image - Exact Name Match ===
+  PASS: Returns correct name for arrow_white_12px
+  PASS: Returns non-empty image for arrow_white_12px
+  PASS: Returns correct name for arrow_red_12px
+  PASS: Returns non-empty image for arrow_red_12px
+  PASS: Returns correct name for circle_red_12px
+  PASS: Returns non-empty image for circle_red_12px
+  PASS: Returns correct name for circle_green_12px
+  PASS: Returns non-empty image for circle_green_12px
+=== UseBase64Image - Partial Name Match ===
+  PASS: Returns name starting with arrow_white
+  PASS: Returns non-empty image for partial match
+  PASS: Returns name starting with circle_red
+  PASS: Returns non-empty image for partial match
+=== UseBase64Image - Empty Name ===
+  PASS: Returns empty name for empty input
+  PASS: Returns empty image for empty input
+  PASS: Returns empty name for no argument
+  PASS: Returns empty image for no argument
+=== UseBase64Image - Non-existent Name ===
+  PASS: Returns the requested name even if not found
+  PASS: Returns empty string (not 0) for non-existent image
+  PASS: Image is exactly empty string, not falsy 0
+  PASS: Returns empty string for completely unknown name
+  PASS: Image value is String type, not Integer
+
 === IndicatorState.Initialization ===
   PASS: Initial markName is empty
   PASS: Initial markImage is empty
@@ -137,5 +163,5 @@ Starting Language Indicator Test Suite
 
 
 === SUMMARY ===
-Total: 108 | Passed: 108 | Failed: 0
+Total: 129 | Passed: 129 | Failed: 0
 All tests passed!

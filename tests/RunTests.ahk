@@ -3,6 +3,7 @@
 
 #include TestFramework.ahk
 #include MarkResolver.test.ahk
+#include UseBase64Image.test.ahk
 #include IndicatorState.test.ahk
 #include InputState.test.ahk
 #include Indicators.test.ahk
@@ -17,6 +18,9 @@ RunAllTests() {
 
     ; Run unit tests
     MarkResolverTests.Run()
+    T.Log("")
+
+    UseBase64ImageTests.Run()
     T.Log("")
 
     IndicatorStateTests.Run()

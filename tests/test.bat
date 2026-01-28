@@ -1,4 +1,5 @@
 @echo off
+REM Main test runner with verbose output
 echo Running Language Indicator Tests...
 echo.
 "C:\Program Files\AutoHotkey\v2\AutoHotkey64.exe" /ErrorStdOut "%~dp0RunTestsConsole.ahk"
