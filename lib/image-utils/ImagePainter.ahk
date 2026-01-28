@@ -48,11 +48,22 @@ class ImagePainter {
         }
 
         ; this.img.image must be <filePath | base64>, see https://github.com/iseahound/ImagePut/wiki/Input-Types-&-Output-Functions#input-types
-        this.img.w := ImageWidth(this.img.image)
-        this.img.h := ImageHeight(this.img.image)
+        try {
+            this.img.w := ImageWidth(this.img.image)
+            this.img.h := ImageHeight(this.img.image)
+        } catch {
+            this.Clear()
+            return
+        }
 
         if (this.window == -1) {
-            this.InitWindow()
+            try {
+                this.InitWindow()
+            } catch {
+                this.window := -1
+                this.Clear()
+                return
+            }
         }
 
         halfHeight := Floor(this.img.h / 2)

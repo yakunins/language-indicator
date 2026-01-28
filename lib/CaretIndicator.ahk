@@ -56,12 +56,12 @@ class CaretIndicator extends IndicatorBase {
     }
 
     UseMarkFile() {
-        markName := MarkResolver.GetMarkName(this.inputState.locale, this.inputState.capslock)
-        if (markName == "") {
+        markFile := MarkResolver.GetMarkFile(this.cfg.files, this.inputState.locale, this.inputState.capslock)
+        if (markFile == "") {
             this.markPainter.RemoveWindow()
             return
         }
-        markFile := MarkResolver.GetMarkFile(this.cfg.files, this.inputState.locale, this.inputState.capslock)
+        SplitPath(markFile, &markName)
         markObj := { name: markName, image: markFile }
         this.PaintMark(markObj)
         this.onFrame.ScheduleRun(() => this.PaintMark(markObj), "caret", this.cfg.updatePeriod)

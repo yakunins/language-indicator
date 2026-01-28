@@ -104,7 +104,8 @@ class CursorIndicator extends IndicatorBase {
 
     UseMarkPngFile(filePath) {
         this.RevertCursors()
-        markObj := { name: filePath, image: filePath }
+        SplitPath(filePath, &fileName)
+        markObj := { name: fileName, image: filePath }
         this.PaintMark(markObj)
         this.onFrame.ScheduleRun(() => this.PaintMark(markObj), "cursor", this.cfg.updatePeriod)
     }
