@@ -28,15 +28,15 @@ Standalone version of the script creates a marker near the mouse cursor <ins>wit
 | :--------------------- | :------------------------- | :------------------------ |
 | Language 2             | `./cursors/2.cur`          | `./carets/2.png`          |
 | Language 1 + Caps Lock | `./cursors/1-capslock.cur` | `./carets/1-capslock.png` |
-| Language 2 + Caps Lock | `./cursors/2-capslock.cur` | `./carets/2-capslock.png` |
+| Language 2 + Caps Lock | `./cursors/2-capslock.png` | `./carets/2-capslock.png` |
 
 ## Flag as a Language Indicator
 
 <img src="img/flag-as-language-indicator.gif" width="347" alt="country flag language indicator for text caret and mouse cursor" />
 
 1. Having `language-indicator.exe` in current folder, create folder [`carets`](./carets) or [`cursors`](./cursors)
-2. Copy country flag from `/img/flags-png/es.png` into these folders
-3. Rename it into `2.png`
+2. Move country flag ([`img/flags-png/es.png`](./img/flags-png/es.png)) into new folders
+3. Rename it into `2.png` (see the table above)
 4. Run `language-indicator.exe` and try switching languages
 
 Tips:
