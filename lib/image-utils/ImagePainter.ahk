@@ -5,6 +5,7 @@
 class ImagePainter {
     zero := { image: "", name: "", x: "", y: "", time: -1 }
     window := -1
+    windowVisible := false
     margin := { x: 0, y: 0 } ; margin from the cursor's center
     img := {} ; script' state
 
@@ -33,7 +34,7 @@ class ImagePainter {
             return
         }
 
-        if (this.window != -1) { ; already painted
+        if (this.window != -1 and this.windowVisible) { ; already painted and visible
             if (this.img.x == this.img.prev.x and
                 this.img.y == this.img.prev.y and
                 this.img.name == this.img.prev.name) {
@@ -57,6 +58,7 @@ class ImagePainter {
         halfHeight := Floor(this.img.h / 2)
         showOptions := "X" this.img.x + this.margin.x " Y" this.img.y - halfHeight + this.margin.y " AutoSize NA"
         this.window.Show(showOptions) ; real paint
+        this.windowVisible := true
     }
 
     ; create or recreate transparent window for a caret mark's image
@@ -86,12 +88,14 @@ class ImagePainter {
         if this.window != -1 {
             this.window.Destroy()
             this.window := -1
+            this.windowVisible := false
         }
     }
 
     HideWindow() {
         if this.window != -1 {
             this.window.Hide()
+            this.windowVisible := false
         }
     }
 }
