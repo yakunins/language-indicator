@@ -29,8 +29,8 @@ class ActiveMonitor {
 		s3 := "monitor rect: " Jsons.Dump(this.monRect) "`n"
 		s4 := "active window: " this.activeWindow "`n"
 		s5 := "active window rect: " Jsons.Dump(this.winRect) "`n"
-		s5 := "active window scaled: " Jsons.Dump(this.winScaled) "`n"
-		return s1 s2 s3 s4 s5
+		s6 := "active window scaled: " Jsons.Dump(this.winScaled) "`n"
+		return s1 s2 s3 s4 s5 s6
 	}
 
 	; obtains active window's position across all monitors

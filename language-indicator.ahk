@@ -5,7 +5,7 @@
 #include lib\CursorIndicator.ahk
 
 class LanguageIndicator {
-    static Version := "0.5"
+    static Version := "0.6"
 
     caretIndicator := ""
     cursorIndicator := ""

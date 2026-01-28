@@ -6,9 +6,11 @@ How it works:
 2. Check() first verifies the cursor is IBeam (text input cursor)
    - If not IBeam, reverts any modified cursors and hides the mark
 3. Updates input state (keyboard locale and capslock)
-4. Determines whether to use cursor files (.cur/.ani/.ico) or embedded images:
-   - If cursor files folder exists: replaces system IBeam cursor via SetSystemCursor
-   - If no folder: paints floating mark image that follows mouse position
+4. Determines whether to use cursor files or embedded images:
+   - If cursor files folder exists: uses files from that folder
+     - .cur/.ani/.ico files: replaces system IBeam cursor via SetSystemCursor
+     - .png files: paints floating mark image that follows mouse position
+   - If no folder: paints floating mark using embedded base64 images
 5. Mouse position prediction reduces visual lag between cursor and mark
 6. OnFrameRateScheduler provides smooth updates synchronized to display refresh
 7. On script exit, restores original system cursors via SystemParametersInfo
@@ -29,7 +31,7 @@ class CursorIndicator extends IndicatorBase {
             capslockSuffix: "-capslock",
             folderExistCheckPeriod: 1000,
             folder: A_ScriptDir . "\cursors\",
-            extensions: [".cur", ".ani", ".ico"]
+            extensions: [".cur", ".ani", ".ico", ".png"]
         },
         markMargin: { x: 11, y: -11 },
         mousePositionPrediction: 0.5,
@@ -66,19 +68,19 @@ class CursorIndicator extends IndicatorBase {
     Check() {
         if (A_Cursor != this.cfg.target.cursorName) {
             this.RevertCursors()
-            this.mark.HideWindow()
+            this.markPainter.HideWindow()
             return
         }
         this.inputState.Update()
         this.FolderExists()
-            ? this.UseCursorFile()
+            ? this.UseFile()
             : this.UseMarkEmbedded()
     }
 
     UseMarkEmbedded() {
         markName := MarkResolver.GetMarkName(this.inputState.locale, this.inputState.capslock)
         if (markName == "") {
-            this.mark.RemoveWindow()
+            this.markPainter.RemoveWindow()
             return
         }
         markObj := UseBase64Image(markName)
@@ -86,12 +88,33 @@ class CursorIndicator extends IndicatorBase {
         this.onFrame.ScheduleRun(() => this.PaintMark(markObj), "cursor", this.cfg.updatePeriod)
     }
 
-    UseCursorFile() {
-        cursorFile := MarkResolver.GetMarkFile(this.cfg.files, this.inputState.locale, this.inputState.capslock)
+    UseFile() {
+        filePath := MarkResolver.GetMarkFile(this.cfg.files, this.inputState.locale, this.inputState.capslock)
+        if (filePath == "") {
+            this.RevertCursors()
+            this.markPainter.HideWindow()
+            return
+        }
+        SplitPath(filePath, , , &ext)
+        if (ext = "png")
+            this.UseMarkPngFile(filePath)
+        else
+            this.UseCursorFile(filePath)
+    }
+
+    UseMarkPngFile(filePath) {
+        this.RevertCursors()
+        markObj := { name: filePath, image: filePath }
+        this.PaintMark(markObj)
+        this.onFrame.ScheduleRun(() => this.PaintMark(markObj), "cursor", this.cfg.updatePeriod)
+    }
+
+    UseCursorFile(cursorFile := "") {
         if (cursorFile == "") {
             this.RevertCursors()
             return
         }
+        this.markPainter.HideWindow()
         this.SetCursorFromFile(cursorFile)
     }
 
@@ -101,32 +124,32 @@ class CursorIndicator extends IndicatorBase {
 
     PaintMark(markObj, cursor := "IBeam") {
         if (cursor != 0 and cursor != A_Cursor) {
-            this.mark.HideWindow()
-            this.mark.Clear()
+            this.markPainter.HideWindow()
+            this.markPainter.Clear()
             return
         }
 
         if (!markObj.image or 10 > StrLen(markObj.image)) {
-            this.mark.RemoveWindow()
-            this.mark.Clear()
+            this.markPainter.RemoveWindow()
+            this.markPainter.Clear()
             return
         }
 
         pos := this.GetPosition()
 
         if (pos.x == -1 or pos.y == -1) {
-            this.mark.HideWindow()
-            this.mark.Clear()
+            this.markPainter.HideWindow()
+            this.markPainter.Clear()
             return
         }
 
-        this.mark.StorePrev()
-        this.mark.img.name := markObj.name
-        this.mark.img.image := markObj.image
-        this.mark.img.x := pos.x
-        this.mark.img.y := pos.y
+        this.markPainter.StorePrev()
+        this.markPainter.img.name := markObj.name
+        this.markPainter.img.image := markObj.image
+        this.markPainter.img.x := pos.x
+        this.markPainter.img.y := pos.y
 
-        this.mark.Paint()
+        this.markPainter.Paint()
     }
 
     SetCursorFromFile(filePath := "") {
@@ -135,7 +158,7 @@ class CursorIndicator extends IndicatorBase {
 
         if FileExist(filePath) {
             SplitPath(filePath, , , &ext)
-            if !(ext ~= "^(?i:cur|ani|ico)$")
+            if !(ext = "cur" or ext = "ani" or ext = "ico")
                 return
         } else {
             return
@@ -158,7 +181,7 @@ class CursorIndicator extends IndicatorBase {
     OnExit(reason, code) {
         if !(reason ~= "^(?i:Logoff|Shutdown)$") {
             this.RevertCursors()
-            this.mark.RemoveWindow()
+            this.markPainter.RemoveWindow()
         }
     }
 }

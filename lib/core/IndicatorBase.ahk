@@ -12,15 +12,15 @@ class IndicatorBase {
     cfg := {}
     state := {}
     inputState := {}
-    mark := {}
+    markPainter := {}
     folderExistsCache := ""
 
     __New(cfg) {
         this.cfg := cfg
         this.state := IndicatorState()
         this.inputState := InputState()
-        this.mark := ImagePainter()
-        this.mark.margin := this.cfg.markMargin
+        this.markPainter := ImagePainter()
+        this.markPainter.margin := this.cfg.markMargin
 
         ; Create cached folder check function
         this.folderExistsCache := UseCached(
@@ -48,7 +48,7 @@ class IndicatorBase {
     UseMarkEmbedded() {
         markName := MarkResolver.GetMarkName(this.inputState.locale, this.inputState.capslock)
         if (markName == "") {
-            this.mark.RemoveWindow()
+            this.markPainter.RemoveWindow()
             return
         }
         markObj := UseBase64Image(markName)
@@ -58,7 +58,7 @@ class IndicatorBase {
     UseMarkFile() {
         markName := MarkResolver.GetMarkName(this.inputState.locale, this.inputState.capslock)
         if (markName == "") {
-            this.mark.RemoveWindow()
+            this.markPainter.RemoveWindow()
             return
         }
         markFile := MarkResolver.GetMarkFile(this.cfg.files, this.inputState.locale, this.inputState.capslock)
@@ -78,6 +78,6 @@ class IndicatorBase {
 
     OnExit(reason, code) {
         if !(reason ~= "^(?i:Logoff|Shutdown)$")
-            this.mark.RemoveWindow()
+            this.markPainter.RemoveWindow()
     }
 }

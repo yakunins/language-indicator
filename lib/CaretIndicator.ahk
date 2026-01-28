@@ -47,7 +47,7 @@ class CaretIndicator extends IndicatorBase {
     UseMarkEmbedded() {
         markName := MarkResolver.GetMarkName(this.inputState.locale, this.inputState.capslock)
         if (markName == "") {
-            this.mark.RemoveWindow()
+            this.markPainter.RemoveWindow()
             return
         }
         markObj := UseBase64Image(markName)
@@ -58,7 +58,7 @@ class CaretIndicator extends IndicatorBase {
     UseMarkFile() {
         markName := MarkResolver.GetMarkName(this.inputState.locale, this.inputState.capslock)
         if (markName == "") {
-            this.mark.RemoveWindow()
+            this.markPainter.RemoveWindow()
             return
         }
         markFile := MarkResolver.GetMarkFile(this.cfg.files, this.inputState.locale, this.inputState.capslock)
@@ -78,8 +78,8 @@ class CaretIndicator extends IndicatorBase {
 
     PaintMark(markObj) {
         if (!markObj.image or 2 > StrLen(markObj.image)) {
-            this.mark.RemoveWindow()
-            this.mark.Clear()
+            this.markPainter.RemoveWindow()
+            this.markPainter.Clear()
             return
         }
 
@@ -93,16 +93,16 @@ class CaretIndicator extends IndicatorBase {
             DebugCaretPosition(&left, &top, &right, &bottom, &detectMethod)
 
         if (InStr(detectMethod, "failure") or (w < 1 and h < 1)) {
-            this.mark.HideWindow()
+            this.markPainter.HideWindow()
             return
         }
 
-        this.mark.StorePrev()
-        this.mark.img.name := markObj.name
-        this.mark.img.image := markObj.image
-        this.mark.img.x := left
-        this.mark.img.y := top
+        this.markPainter.StorePrev()
+        this.markPainter.img.name := markObj.name
+        this.markPainter.img.image := markObj.image
+        this.markPainter.img.x := left
+        this.markPainter.img.y := top
 
-        this.mark.Paint()
+        this.markPainter.Paint()
     }
 }
