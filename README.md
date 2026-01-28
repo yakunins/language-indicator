@@ -30,6 +30,13 @@ Standalone version of the script creates a marker near the mouse cursor <ins>wit
 | Language 1 + Caps Lock | `./cursors/1-capslock.cur` | `./carets/1-capslock.png` |
 | Language 2 + Caps Lock | `./cursors/2-capslock.cur` | `./carets/2-capslock.png` |
 
+## Flag as a Language Indicator
+
+<img src="img/flag-as-language-indicator.gif" width="347" alt="country flag language indicator for text caret and mouse cursor" />
+
+1. Put country flag from `/img/flags-png/es.png` into [`carets`](./carets) or [`cursors`](./cursors)
+2. Rename it into `2.png` (there must be no `2.cur`)
+
 Tips:
 
 - Supported caret mark formats: PNG, GIF
