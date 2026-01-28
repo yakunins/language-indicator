@@ -24,9 +24,8 @@ OnFrameRate(fn, timeLimit := 100) {
 
 ; https://www.autohotkey.com/boards/viewtopic.php?style=19&p=565832#p565832
 GetFps(defaultFrameRate := 60) {
-    ; time-consuming operation
-    queryEnum := ComObjGet('winmgmts:').ExecQuery('Select * from Win32_VideoController')._NewEnum()
     try {
+        queryEnum := ComObjGet('winmgmts:').ExecQuery('Select * from Win32_VideoController')._NewEnum()
         q := queryEnum(&p)
         if q and p != "" {
             current := p.CurrentRefreshRate
@@ -37,7 +36,7 @@ GetFps(defaultFrameRate := 60) {
     return Floor(defaultFrameRate)
 }
 
-GetCachedFps := UseCached(GetFps, 1000) ; cache fn result for 1 second
+GetCachedFps := UseCached(GetFps, 5000) ; cache fn result for 5 seconds
 
 class OnFrameRateScheduler {
     static subscribers := Map()
