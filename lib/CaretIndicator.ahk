@@ -32,7 +32,7 @@ class CaretIndicator extends IndicatorBase {
             extensions: [".png", ".gif"]
         },
         markMargin: { x: 1, y: -1 },
-        updatePeriod: 16, ; update rate ~60 fps
+        updatePeriod: 17, ; update rate ~60 fps
     }
 
     __New(cfg?) {

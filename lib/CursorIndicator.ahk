@@ -22,6 +22,7 @@ How it works:
 #include core\IndicatorBase.ahk
 #include core\MarkResolver.ahk
 #include detection\GetMousePosPrediction.ahk
+#include detection\GetCursorSize.ahk
 #include utils\OnFrameRate.ahk
 
 class CursorIndicator extends IndicatorBase {
@@ -33,8 +34,8 @@ class CursorIndicator extends IndicatorBase {
             folder: A_ScriptDir . "\cursors\",
             extensions: [".cur", ".ani", ".ico", ".png"]
         },
-        markMargin: { x: 11, y: -11 },
-        mousePositionPrediction: 0.5,
+        markMargin: { x: 10, y: -10, useCursorSize: true },
+        mousePositionPrediction: 0.6, ; 1 frame delay compensation, 0.5 = 50% prediction, 0 = no prediction
         target: {
             cursorId: 32513,
             cursorName: "IBeam"
@@ -42,20 +43,23 @@ class CursorIndicator extends IndicatorBase {
         updatePeriod: 16 ; update rate ~60 fps
     }
 
-    modifiedCursorsCount := 0
-    onFrame := ""
 
     __New(cfg?) {
         if !IsSet(cfg)
             cfg := CursorIndicator.DefaultConfig
         super.__New(cfg)
+
         this.onFrame := OnFrameRateScheduler.Increase()
+        this.modifiedCursorsCount := 0
 
         ; Override folder exists cache to include Decrease() call on cache refresh
         this.folderExistsCache := UseCached(
             () => this.CheckFolderExistsWithDecrease(),
             this.cfg.files.folderExistCheckPeriod
         )
+
+        if (cfg.markMargin.useCursorSize)
+            this.markPainter.margin := this.GetCursorSizeMargin()
     }
 
     CheckFolderExistsWithDecrease() {
@@ -121,6 +125,13 @@ class CursorIndicator extends IndicatorBase {
 
     GetPosition() {
         return GetMousePos(this.cfg.mousePositionPrediction)
+    }
+
+    GetCursorSizeMargin() {
+        GetScaledCursorSize(&w, &h)
+        marginX := Round(w / 6) + this.cfg.markMargin.x
+        marginY := Round(h / 4) + this.cfg.markMargin.y
+        return { x: marginX, y: -marginY }
     }
 
     PaintMark(markObj, cursor := "IBeam") {

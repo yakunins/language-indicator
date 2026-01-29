@@ -1,0 +1,8 @@
+Cursor Size Test
+================
+
+Current cursor: 32x32
+System default: 32x32
+Scale factor: 1.5
+Scaled size: 48x48
+Timestamp: 20260129103814

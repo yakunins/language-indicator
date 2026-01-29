@@ -30,7 +30,7 @@ class CaretIndicatorTests {
         ; Verify default values
         T.AssertEqual(cfg.files.capslockSuffix, "-capslock", "Default capslock suffix is -capslock")
         T.Assert(cfg.files.extensions.Length == 2, "Default extensions has 2 items")
-        T.AssertEqual(cfg.updatePeriod, 100, "Default updatePeriod is 100")
+        T.AssertEqual(cfg.updatePeriod, 17, "Default updatePeriod is 17")
     }
 
     static TestInitialization() {

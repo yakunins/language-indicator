@@ -11,12 +11,12 @@ class LanguageIndicator {
     __New(cfg?) {
         defaultCfg := {
             caret: {
-                updatePeriod: 18, ; doesn't affect much, caret position updates are not much frequent
+                updatePeriod: 17, ; ~60 fps, caret position updates are not much frequent
                 markMargin: { x: 1, y: -1 }
             },
             cursor: {
-                updatePeriod: 6, ; update rate ~166 fps, for your monitor could be less frequent
-                markMargin: { x: 11, y: -11 }
+                updatePeriod: 6, ; ~166 fps, for your monitor could be less frequent
+                markMargin: { x: 2, y: -2, useCursorSize: true }
             }
         }
 

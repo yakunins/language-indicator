@@ -2,7 +2,6 @@
 #requires AutoHotkey v2.0
 #include UseCached.ahk
 #include TickCount.ahk
-;#include Log.ahk
 
 ; run fn at (almost) every frame for certain period of time
 OnFrameRate(fn, timeLimit := 100) {
@@ -55,7 +54,7 @@ class OnFrameRateScheduler {
 
     static Subscribe(fn, fnid, timeLimit) {
         this.subscribers.Set(fnid, fn)
-        this.timeLimit := Mint(this.timeLimit, timeLimit)
+        this.timeLimit := MinT(this.timeLimit, timeLimit)
     }
 
     static Clear() {
@@ -98,7 +97,7 @@ class OnFrameRateScheduler {
     }
 }
 
-Mint(t1, t2) {
+MinT(t1, t2) {
     if t1 < 1
         return t2
     return Min(t1, t2)

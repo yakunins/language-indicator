@@ -101,16 +101,16 @@ Starting Language Indicator Test Suite
   PASS: files has capslockSuffix property
   PASS: Default capslock suffix is -capslock
   PASS: Default extensions has 2 items
-  PASS: Default updatePeriod is 100
+  PASS: Default updatePeriod is 17
 === CaretIndicator.Initialization ===
   PASS: Indicator has cfg
   PASS: Indicator has state
   PASS: Indicator has inputState
-  PASS: Indicator has mark (ImagePainter)
+  PASS: Indicator has markPainter (ImagePainter)
   PASS: Indicator has onFrame scheduler
   PASS: state is IndicatorState instance
   PASS: inputState is InputState instance
-  PASS: mark is ImagePainter instance
+  PASS: markPainter is ImagePainter instance
 === CaretIndicator.GetPosition ===
   PASS: Position has left property
   PASS: Position has top property
@@ -131,12 +131,12 @@ Starting Language Indicator Test Suite
   PASS: target has cursorName property
   PASS: Default cursorId is 32513 (IDC_IBEAM)
   PASS: Default cursorName is IBeam
-  PASS: Cursor extensions has 3 items (cur, ani, ico)
+  PASS: Cursor extensions has 4 items (cur, ani, ico, png)
 === CursorIndicator.Initialization ===
   PASS: Indicator has cfg
   PASS: Indicator has state
   PASS: Indicator has inputState
-  PASS: Indicator has mark (ImagePainter)
+  PASS: Indicator has markPainter (ImagePainter)
   PASS: Indicator has modifiedCursorsCount
   PASS: Initial modifiedCursorsCount is 0
 === CursorIndicator.GetPosition ===
