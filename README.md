@@ -1,12 +1,10 @@
 # Language Indicator for Windows
 
-**Always know which keyboard language you're typing in.**
-
 <img src="img/how-it-work.gif" width="507" alt="Windows keyboard language indicator showing current input language near text caret and mouse cursor" />
 
 ## Per-Language Styling of Text Caret and Mouse Cursor
 
-Keeps track of your current language and changes [caret](https://en.wikipedia.org/wiki/Caret_navigation) and [text selection mouse cursor](<https://en.wikipedia.org/wiki/Cursor_(user_interface)#I-beam_pointer>).
+Keeps track of your current keyboard language/layout and changes [caret](https://en.wikipedia.org/wiki/Caret_navigation) and [text selection mouse cursor](<https://en.wikipedia.org/wiki/Cursor_(user_interface)#I-beam_pointer>).
 
 It works in most envs, including consoles and Universal Windows Apps, aka Metro apps.
 Exceptions are Adobe Indesign and some .NET MAUI apps.
