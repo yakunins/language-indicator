@@ -9,12 +9,6 @@
 #include ..\utils\UseCached.ahk
 
 class IndicatorBase {
-    cfg := {}
-    state := {}
-    inputState := {}
-    markPainter := {}
-    folderExistsCache := ""
-
     __New(cfg) {
         this.cfg := cfg
         this.state := IndicatorState()

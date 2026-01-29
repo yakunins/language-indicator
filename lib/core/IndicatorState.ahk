@@ -2,12 +2,11 @@
 #requires AutoHotkey v2.0
 
 class IndicatorState {
-    markName := ""
-    markImage := ""
-    markFile := ""
-    prev := {}
-
     __New() {
+        this.markName := ""
+        this.markImage := ""
+        this.markFile := ""
+
         this.prev := {
             markName: "",
             markImage: "",

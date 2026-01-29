@@ -32,13 +32,11 @@ class CaretIndicator extends IndicatorBase {
             extensions: [".png", ".gif"]
         },
         markMargin: { x: 1, y: -1 },
-        updatePeriod: 100
+        updatePeriod: 16, ; update rate ~60 fps
     }
 
-    onFrame := ""
-
-    __New(cfg := "") {
-        if (cfg == "")
+    __New(cfg?) {
+        if !IsSet(cfg)
             cfg := CaretIndicator.DefaultConfig
         super.__New(cfg)
         this.onFrame := OnFrameRateScheduler.Increase()
@@ -98,10 +96,10 @@ class CaretIndicator extends IndicatorBase {
         }
 
         this.markPainter.StorePrev()
-        this.markPainter.img.name := markObj.name
-        this.markPainter.img.image := markObj.image
-        this.markPainter.img.x := left
-        this.markPainter.img.y := top
+        this.markPainter.current.name := markObj.name
+        this.markPainter.current.image := markObj.image
+        this.markPainter.current.x := left
+        this.markPainter.current.y := top
 
         this.markPainter.Paint()
     }

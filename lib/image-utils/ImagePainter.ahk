@@ -3,110 +3,156 @@
 #include ImagePut.ahk
 
 class ImagePainter {
-    zero := { image: "", name: "", x: "", y: "", time: -1 }
-    window := -1
-    windowVisible := false
-    margin := { x: 0, y: 0 } ; margin from the cursor's center
-    img := {} ; script' state
+    ; Window style constants
+    static WS_CHILD := 0x40000000
+    static WS_VISIBLE := 0x10000000
+    static WS_EX_LAYERED := 0x8000000
 
-    __New() {
-        this.ClearAll()
+    ; Configuration
+    bgColor := "ffffff"
+    margin := { x: 0, y: 0 }
+
+    ; Window state
+    window := ""
+    windowVisible := false
+
+    ; Image state
+    current := { image: "", name: "", x: "", y: "", w: 0, h: 0 }
+    prev := { image: "", name: "", x: "", y: "", w: 0, h: 0 }
+
+    __New(bgColor?) {
+        if IsSet(bgColor)
+            this.bgColor := bgColor
     }
 
     Clear() {
-        this.img := this.zero
+        this.current := { image: "", name: "", x: "", y: "", w: 0, h: 0 }
     }
 
     ClearAll() {
-        this.img := this.zero
-        this.img.prev := this.zero
+        this.Clear()
+        this.prev := { image: "", name: "", x: "", y: "", w: 0, h: 0 }
     }
 
     StorePrev() {
-        this.img.prev := this.img.Clone()
-        this.img.prev.DeleteProp("prev")
+        this.prev := this.current.Clone()
     }
 
     Paint() {
-        if (this.img.image == "" or !this.img.image) or
-            (this.img.x == "" or this.img.y == "") {
-            this.Clear()
+        if !this._hasValidState()
             return
-        }
 
-        if (this.window != -1 and this.windowVisible) { ; already painted and visible
-            if (this.img.x == this.img.prev.x and
-                this.img.y == this.img.prev.y and
-                this.img.name == this.img.prev.name) {
-                return ; skip repaint if same image and pos
-            }
+        imageChanged := this._hasImageChanged()
 
-            if (this.img.name != this.img.prev.name or
-                this.img.image != this.img.prev.image) {
-                this.RemoveWindow() ; different image, init required
-            }
-        }
-
-        ; this.img.image must be <filePath | base64>, see https://github.com/iseahound/ImagePut/wiki/Input-Types-&-Output-Functions#input-types
-        try {
-            this.img.w := ImageWidth(this.img.image)
-            this.img.h := ImageHeight(this.img.image)
-        } catch {
-            this.Clear()
+        if this._canSkipRepaint(imageChanged)
             return
-        }
 
-        if (this.window == -1) {
-            try {
-                this.InitWindow()
-            } catch {
-                this.window := -1
-                this.Clear()
-                return
-            }
-        }
+        if (this.window != "" and imageChanged)
+            this.RemoveWindow()
 
-        halfHeight := Floor(this.img.h / 2)
-        showOptions := "X" this.img.x + this.margin.x " Y" this.img.y - halfHeight + this.margin.y " AutoSize NA"
-        this.window.Show(showOptions) ; real paint
-        this.windowVisible := true
-    }
+        if !this._loadDimensions(imageChanged)
+            return
 
-    ; create or recreate transparent window for a caret mark's image
-    InitWindow() {
-        if (this.window != -1)
-            this.window.Destroy()
+        if !this._ensureWindow()
+            return
 
-        bgColor := "ffffff"
-        minSize := " +MinSize" this.img.w "x" this.img.h
-        maxSize := " +MaxSize" this.img.w "x" this.img.h
-
-        ; GUI to be transparent and not affected by DPI scaling
-        this.window := Gui("+LastFound -Caption +AlwaysOnTop +ToolWindow -Border -DPIScale -Resize" minSize maxSize)
-        this.window.MarginX := 0
-        this.window.MarginY := 0
-        this.window.Title := ""
-        this.window.BackColor := bgColor
-        WinSetTransColor(bgColor, this.window)
-
-        display := this.window.Add("Text", "xm+0") ; create a dummy control to repurpose for ImagePut's functionality
-        display.move(, , this.img.w, this.img.h) ; must resize the viewable area of the control
-        ; use ImagePut to create a child window, and set the parent as the text control
-        image_hwnd := ImageShow(this.img.image, , [0, 0], 0x40000000 | 0x10000000 | 0x8000000, , display.hwnd)
+        this._showAtPosition()
     }
 
     RemoveWindow() {
-        if this.window != -1 {
+        if this.window != "" {
             this.window.Destroy()
-            this.window := -1
+            this.window := ""
             this.windowVisible := false
         }
     }
 
     HideWindow() {
-        if this.window != -1 {
+        if this.window != "" {
             this.window.Hide()
             this.windowVisible := false
         }
+    }
+
+    ; Private methods
+
+    _hasValidState() {
+        if (this.current.image == "" or !this.current.image)
+            return false
+        if (this.current.x == "" or this.current.y == "")
+            return false
+        return true
+    }
+
+    _hasImageChanged() {
+        return (this.current.name != this.prev.name or this.current.image != this.prev.image)
+    }
+
+    _canSkipRepaint(imageChanged) {
+        if (this.window == "" or !this.windowVisible)
+            return false
+        return (this.current.x == this.prev.x and
+                this.current.y == this.prev.y and
+                !imageChanged)
+    }
+
+    _loadDimensions(imageChanged) {
+        if (!imageChanged and this.current.w > 0 and this.current.h > 0)
+            return true
+
+        try {
+            this.current.w := ImageWidth(this.current.image)
+            this.current.h := ImageHeight(this.current.image)
+            return true
+        } catch {
+            this.Clear()
+            return false
+        }
+    }
+
+    _ensureWindow() {
+        if this.window != ""
+            return true
+
+        try {
+            this._initWindow()
+            return true
+        } catch {
+            this.window := ""
+            this.Clear()
+            return false
+        }
+    }
+
+    _initWindow() {
+        if (this.window != "")
+            this.window.Destroy()
+
+        sizeConstraints := " +MinSize" this.current.w "x" this.current.h
+                        .  " +MaxSize" this.current.w "x" this.current.h
+
+        ; GUI: transparent, always-on-top, no DPI scaling
+        this.window := Gui("+LastFound -Caption +AlwaysOnTop +ToolWindow -Border -DPIScale -Resize" sizeConstraints)
+        this.window.MarginX := 0
+        this.window.MarginY := 0
+        this.window.Title := ""
+        this.window.BackColor := this.bgColor
+        WinSetTransColor(this.bgColor, this.window)
+
+        ; Create dummy control for ImagePut
+        display := this.window.Add("Text", "xm+0")
+        display.move(, , this.current.w, this.current.h)
+
+        ; ImagePut child window styles: WS_CHILD | WS_VISIBLE | WS_EX_LAYERED
+        windowStyles := ImagePainter.WS_CHILD | ImagePainter.WS_VISIBLE | ImagePainter.WS_EX_LAYERED
+        ImageShow(this.current.image, , [0, 0], windowStyles, , display.hwnd)
+    }
+
+    _showAtPosition() {
+        halfHeight := Floor(this.current.h / 2)
+        posX := this.current.x + this.margin.x
+        posY := this.current.y - halfHeight + this.margin.y
+        this.window.Show("X" posX " Y" posY " AutoSize NA")
+        this.windowVisible := true
     }
 }

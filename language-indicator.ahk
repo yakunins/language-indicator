@@ -3,51 +3,32 @@
 
 #include lib\CaretIndicator.ahk
 #include lib\CursorIndicator.ahk
+#include lib\utils\Merge.ahk
 
 class LanguageIndicator {
     static Version := "0.6"
 
-    caretIndicator := ""
-    cursorIndicator := ""
-    cfg := {}
-
-    __New(cfg := "") {
+    __New(cfg?) {
         defaultCfg := {
-            updatePeriod: 10,
-            caret: "",
-            cursor: ""
+            caret: {
+                updatePeriod: 18, ; doesn't affect much, caret position updates are not much frequent
+                markMargin: { x: 1, y: -1 }
+            },
+            cursor: {
+                updatePeriod: 6, ; update rate ~166 fps, for your monitor could be less frequent
+                markMargin: { x: 11, y: -11 }
+            }
         }
 
-        this.cfg := cfg != "" ? cfg : defaultCfg
+        this.cfg := IsSet(cfg) ? cfg : defaultCfg
 
-        ; Create caret indicator config
-        caretCfg := CaretIndicator.DefaultConfig
-        if (this.cfg.HasOwnProp("updatePeriod"))
-            caretCfg.updatePeriod := this.cfg.updatePeriod
-        if (this.cfg.HasOwnProp("caret") and this.cfg.caret != "")
-            caretCfg := this.MergeConfig(caretCfg, this.cfg.caret)
-
-        ; Create cursor indicator config
-        cursorCfg := CursorIndicator.DefaultConfig
-        if (this.cfg.HasOwnProp("updatePeriod"))
-            cursorCfg.updatePeriod := this.cfg.updatePeriod
-        if (this.cfg.HasOwnProp("cursor") and this.cfg.cursor != "")
-            cursorCfg := this.MergeConfig(cursorCfg, this.cfg.cursor)
-
-        this.caretIndicator := CaretIndicator(caretCfg)
-        this.cursorIndicator := CursorIndicator(cursorCfg)
+        this.caretIndicator := CaretIndicator(merge(CaretIndicator.DefaultConfig, this.cfg.caret))
+        this.cursorIndicator := CursorIndicator(merge(CursorIndicator.DefaultConfig, this.cfg.cursor))
     }
 
     Run() {
         this.caretIndicator.Run()
         this.cursorIndicator.Run()
-    }
-
-    MergeConfig(base, override) {
-        for key, value in override.OwnProps() {
-            base.%key% := value
-        }
-        return base
     }
 }
 

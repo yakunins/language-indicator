@@ -39,14 +39,14 @@ class CursorIndicator extends IndicatorBase {
             cursorId: 32513,
             cursorName: "IBeam"
         },
-        updatePeriod: 100
+        updatePeriod: 16 ; update rate ~60 fps
     }
 
     modifiedCursorsCount := 0
     onFrame := ""
 
-    __New(cfg := "") {
-        if (cfg == "")
+    __New(cfg?) {
+        if !IsSet(cfg)
             cfg := CursorIndicator.DefaultConfig
         super.__New(cfg)
         this.onFrame := OnFrameRateScheduler.Increase()
@@ -145,10 +145,10 @@ class CursorIndicator extends IndicatorBase {
         }
 
         this.markPainter.StorePrev()
-        this.markPainter.img.name := markObj.name
-        this.markPainter.img.image := markObj.image
-        this.markPainter.img.x := pos.x
-        this.markPainter.img.y := pos.y
+        this.markPainter.current.name := markObj.name
+        this.markPainter.current.image := markObj.image
+        this.markPainter.current.x := pos.x
+        this.markPainter.current.y := pos.y
 
         this.markPainter.Paint()
     }
