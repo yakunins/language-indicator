@@ -3,26 +3,13 @@
 #include ImagePut.ahk
 
 class ImagePainter {
-    ; Window style constants
-    static WS_CHILD := 0x40000000
-    static WS_VISIBLE := 0x10000000
-    static WS_EX_LAYERED := 0x8000000
-
-    ; Configuration
-    bgColor := "ffffff"
-    margin := { x: 0, y: 0 }
-
-    ; Window state
-    window := ""
-    windowVisible := false
-
-    ; Image state
-    current := { image: "", name: "", x: "", y: "", w: 0, h: 0 }
-    prev := { image: "", name: "", x: "", y: "", w: 0, h: 0 }
-
-    __New(bgColor?) {
-        if IsSet(bgColor)
-            this.bgColor := bgColor
+    __New() {
+        this.bgColor := "ffffff"
+        this.window := ""
+        this.windowVisible := false
+        this.margin := { x: 0, y: 0 }
+        this.current := { image: "", name: "", x: "", y: "", w: 0, h: 0 }
+        this.prev := { image: "", name: "", x: "", y: "", w: 0, h: 0 }
     }
 
     Clear() {
@@ -85,15 +72,26 @@ class ImagePainter {
     }
 
     _hasImageChanged() {
-        return (this.current.name != this.prev.name or this.current.image != this.prev.image)
+        if (this.current.name != this.prev.name or this.current.image != this.prev.image)
+            return true
+        ; Check if file was modified (for external file changes)
+        if (this.current.image != "" and FileExist(this.current.image)) {
+            modTime := FileGetTime(this.current.image)
+            if (this.current.HasOwnProp("modTime") and this.current.modTime != modTime) {
+                this.current.modTime := modTime
+                return true
+            }
+            this.current.modTime := modTime
+        }
+        return false
     }
 
     _canSkipRepaint(imageChanged) {
         if (this.window == "" or !this.windowVisible)
             return false
         return (this.current.x == this.prev.x and
-                this.current.y == this.prev.y and
-                !imageChanged)
+            this.current.y == this.prev.y and
+            !imageChanged)
     }
 
     _loadDimensions(imageChanged) {
@@ -129,7 +127,7 @@ class ImagePainter {
             this.window.Destroy()
 
         sizeConstraints := " +MinSize" this.current.w "x" this.current.h
-                        .  " +MaxSize" this.current.w "x" this.current.h
+            . " +MaxSize" this.current.w "x" this.current.h
 
         ; GUI: transparent, always-on-top, no DPI scaling
         this.window := Gui("+LastFound -Caption +AlwaysOnTop +ToolWindow -Border -DPIScale -Resize" sizeConstraints)
@@ -144,7 +142,7 @@ class ImagePainter {
         display.move(, , this.current.w, this.current.h)
 
         ; ImagePut child window styles: WS_CHILD | WS_VISIBLE | WS_EX_LAYERED
-        windowStyles := ImagePainter.WS_CHILD | ImagePainter.WS_VISIBLE | ImagePainter.WS_EX_LAYERED
+        windowStyles := WS_CHILD | WS_VISIBLE | WS_EX_LAYERED
         ImageShow(this.current.image, , [0, 0], windowStyles, , display.hwnd)
     }
 
@@ -156,3 +154,8 @@ class ImagePainter {
         this.windowVisible := true
     }
 }
+
+; Window style constants
+WS_CHILD := 0x40000000
+WS_VISIBLE := 0x10000000
+WS_EX_LAYERED := 0x8000000
