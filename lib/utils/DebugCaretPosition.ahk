@@ -4,7 +4,7 @@
 #include ..\detection\GetActiveMonitor.ahk
 #include Log.ahk
 
-DebugCaretPosition(&l, &t, &r, &b, &detectMethod) {
+DebugCaretPosition(l, t, r, b, detectMethod) {
 	win := ActiveMonitor.getActiveWinRect()
 	winRect := ActiveMonitor.winRect
 	posData := ""

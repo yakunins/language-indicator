@@ -40,13 +40,11 @@ class CaretIndicatorTests {
 
         ; Verify indicator was created with components
         T.Assert(indicator.HasOwnProp("cfg"), "Indicator has cfg")
-        T.Assert(indicator.HasOwnProp("state"), "Indicator has state")
         T.Assert(indicator.HasOwnProp("inputState"), "Indicator has inputState")
         T.Assert(indicator.HasOwnProp("markPainter"), "Indicator has markPainter (ImagePainter)")
-        T.Assert(indicator.HasOwnProp("onFrame"), "Indicator has onFrame scheduler")
+        T.Assert(indicator.HasOwnProp("paintScheduler"), "Indicator has paintScheduler")
 
         ; Verify types
-        T.Assert(indicator.state is IndicatorState, "state is IndicatorState instance")
         T.Assert(indicator.inputState is InputState, "inputState is InputState instance")
         T.Assert(indicator.markPainter is ImagePainter, "markPainter is ImagePainter instance")
     }

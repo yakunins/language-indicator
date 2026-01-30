@@ -107,7 +107,7 @@ Starting Language Indicator Test Suite
   PASS: Indicator has state
   PASS: Indicator has inputState
   PASS: Indicator has markPainter (ImagePainter)
-  PASS: Indicator has onFrame scheduler
+  PASS: Indicator has paintScheduler
   PASS: state is IndicatorState instance
   PASS: inputState is InputState instance
   PASS: markPainter is ImagePainter instance

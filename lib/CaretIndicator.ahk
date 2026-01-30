@@ -9,7 +9,7 @@ How it works:
 5. GetCaretRect() detects caret position using multiple methods:
    - GUI thread info, UIA, WPF caret, MSAA, or shell hook injection
 6. If caret found, paints indicator image at caret position
-7. OnFrameRateScheduler provides smooth updates synchronized to display refresh
+7. BatchedPaintScheduler coordinates painting with cursor indicator to prevent glitches
 8. If locale is default (first) and capslock is off, no indicator is shown
 */
 
@@ -19,7 +19,7 @@ How it works:
 #include core\MarkResolver.ahk
 #include detection\GetCaretRect.ahk
 #include utils\DebugCaretPosition.ahk
-#include utils\OnFrameRate.ahk
+#include utils\BatchedPaintScheduler.ahk
 
 class CaretIndicator extends IndicatorBase {
     static DefaultConfig := {
@@ -39,7 +39,7 @@ class CaretIndicator extends IndicatorBase {
         if !IsSet(cfg)
             cfg := CaretIndicator.DefaultConfig
         super.__New(cfg)
-        this.onFrame := OnFrameRateScheduler.Increase()
+        this.paintScheduler := BatchedPaintScheduler.RegisterIndicator()
     }
 
     UseMarkEmbedded() {
@@ -50,7 +50,7 @@ class CaretIndicator extends IndicatorBase {
         }
         markObj := UseBase64Image(markName)
         this.PaintMark(markObj)
-        this.onFrame.ScheduleRun(() => this.PaintMark(markObj), "caret", this.cfg.updatePeriod)
+        this.paintScheduler.QueuePaint(() => this.PaintMark(markObj), "caret", this.cfg.updatePeriod)
     }
 
     UseMarkFile() {
@@ -62,7 +62,7 @@ class CaretIndicator extends IndicatorBase {
         SplitPath(markFile, &markName)
         markObj := { name: markName, image: markFile }
         this.PaintMark(markObj)
-        this.onFrame.ScheduleRun(() => this.PaintMark(markObj), "caret", this.cfg.updatePeriod)
+        this.paintScheduler.QueuePaint(() => this.PaintMark(markObj), "caret", this.cfg.updatePeriod)
     }
 
     GetPosition() {
@@ -81,16 +81,12 @@ class CaretIndicator extends IndicatorBase {
             return
         }
 
-        left := -1, top := -1, right := -1, bottom := -1
-        detectMethod := ""
-        GetCaretRect(&left, &top, &right, &bottom, &detectMethod)
-        w := right - left
-        h := bottom - top
+        pos := this.GetPosition()
 
         if this.cfg.debugCaretPosition
-            DebugCaretPosition(&left, &top, &right, &bottom, &detectMethod)
+            DebugCaretPosition(pos.left, pos.top, pos.right, pos.bottom, pos.detectMethod)
 
-        if (InStr(detectMethod, "failure") or (w < 1 and h < 1)) {
+        if (InStr(pos.detectMethod, "failure") or (pos.w < 1 and pos.h < 1)) {
             this.markPainter.HideWindow()
             return
         }
@@ -98,8 +94,8 @@ class CaretIndicator extends IndicatorBase {
         this.markPainter.StorePrev()
         this.markPainter.current.name := markObj.name
         this.markPainter.current.image := markObj.image
-        this.markPainter.current.x := left
-        this.markPainter.current.y := top
+        this.markPainter.current.x := pos.left
+        this.markPainter.current.y := pos.top
 
         this.markPainter.Paint()
     }

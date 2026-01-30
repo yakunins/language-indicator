@@ -4,7 +4,6 @@
 #include TestFramework.ahk
 #include MarkResolver.test.ahk
 #include UseBase64Image.test.ahk
-#include IndicatorState.test.ahk
 #include InputState.test.ahk
 #include Indicators.test.ahk
 #include LanguageIndicator.test.ahk
@@ -25,9 +24,6 @@ RunAllTests() {
         T.Log("")
 
         UseBase64ImageTests.Run()
-        T.Log("")
-
-        IndicatorStateTests.Run()
         T.Log("")
 
         InputStateTests.Run()

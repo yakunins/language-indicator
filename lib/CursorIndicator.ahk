@@ -12,7 +12,7 @@ How it works:
      - .png files: paints floating mark image that follows mouse position
    - If no folder: paints floating mark using embedded base64 images
 5. Mouse position prediction reduces visual lag between cursor and mark
-6. OnFrameRateScheduler provides smooth updates synchronized to display refresh
+6. BatchedPaintScheduler coordinates painting with caret indicator to prevent glitches
 7. On script exit, restores original system cursors via SystemParametersInfo
 8. If locale is default (first) and capslock is off, no indicator is shown
 */
@@ -23,7 +23,7 @@ How it works:
 #include core\MarkResolver.ahk
 #include detection\GetMousePosPrediction.ahk
 #include detection\GetCursorSize.ahk
-#include utils\OnFrameRate.ahk
+#include utils\BatchedPaintScheduler.ahk
 
 class CursorIndicator extends IndicatorBase {
     static DefaultConfig := {
@@ -35,7 +35,7 @@ class CursorIndicator extends IndicatorBase {
             extensions: [".cur", ".ani", ".ico", ".png"]
         },
         markMargin: { x: 10, y: -10, useCursorSize: true },
-        mousePositionPrediction: 0.6, ; 1 frame delay compensation, 0.5 = 50% prediction, 0 = no prediction
+        mousePositionPrediction: 0.5, ; 1 frame delay compensation, 0.5 = 50% prediction, 0 = no prediction
         target: {
             cursorId: 32513,
             cursorName: "IBeam"
@@ -49,7 +49,7 @@ class CursorIndicator extends IndicatorBase {
             cfg := CursorIndicator.DefaultConfig
         super.__New(cfg)
 
-        this.onFrame := OnFrameRateScheduler.Increase()
+        this.paintScheduler := BatchedPaintScheduler.RegisterIndicator()
         this.modifiedCursorsCount := 0
 
         ; Override folder exists cache to include Decrease() call on cache refresh
@@ -65,7 +65,7 @@ class CursorIndicator extends IndicatorBase {
     CheckFolderExistsWithDecrease() {
         exists := DirExist(this.cfg.files.folder)
         if exists
-            OnFrameRateScheduler.Decrease()
+            BatchedPaintScheduler.UnregisterIndicator()
         return exists
     }
 
@@ -89,7 +89,7 @@ class CursorIndicator extends IndicatorBase {
         }
         markObj := UseBase64Image(markName)
         this.PaintMark(markObj)
-        this.onFrame.ScheduleRun(() => this.PaintMark(markObj), "cursor", this.cfg.updatePeriod)
+        this.paintScheduler.QueuePaint(() => this.PaintMark(markObj), "cursor", this.cfg.updatePeriod)
     }
 
     UseFile() {
@@ -111,7 +111,7 @@ class CursorIndicator extends IndicatorBase {
         SplitPath(filePath, &fileName)
         markObj := { name: fileName, image: filePath }
         this.PaintMark(markObj)
-        this.onFrame.ScheduleRun(() => this.PaintMark(markObj), "cursor", this.cfg.updatePeriod)
+        this.paintScheduler.QueuePaint(() => this.PaintMark(markObj), "cursor", this.cfg.updatePeriod)
     }
 
     UseCursorFile(cursorFile := "") {
@@ -191,9 +191,8 @@ class CursorIndicator extends IndicatorBase {
     }
 
     OnExit(reason, code) {
-        if !(reason ~= "^(?i:Logoff|Shutdown)$") {
+        if !(reason ~= IndicatorBase.SHUTDOWN_REASONS)
             this.RevertCursors()
-            this.markPainter.RemoveWindow()
-        }
+        super.OnExit(reason, code)
     }
 }

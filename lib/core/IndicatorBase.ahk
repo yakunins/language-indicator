@@ -2,16 +2,16 @@
 #requires AutoHotkey v2.0
 
 #include MarkResolver.ahk
-#include IndicatorState.ahk
 #include ..\detection\InputState.ahk
 #include ..\image-utils\ImagePainter.ahk
 #include ..\image-utils\UseBase64Image.ahk
 #include ..\utils\UseCached.ahk
 
 class IndicatorBase {
+    static SHUTDOWN_REASONS := "^(?i:Logoff|Shutdown)$"
+
     __New(cfg) {
         this.cfg := cfg
-        this.state := IndicatorState()
         this.inputState := InputState()
         this.markPainter := ImagePainter()
         this.markPainter.margin := this.cfg.markMargin
@@ -71,7 +71,7 @@ class IndicatorBase {
     }
 
     OnExit(reason, code) {
-        if !(reason ~= "^(?i:Logoff|Shutdown)$")
+        if !(reason ~= IndicatorBase.SHUTDOWN_REASONS)
             this.markPainter.RemoveWindow()
     }
 }
