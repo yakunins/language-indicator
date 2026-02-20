@@ -285,8 +285,12 @@ end:
 		scaleRect(getWinScale(hwnd), &left, &top, &right, &bottom)
 		fixDPIScaleHook(&left, &top, &right, &bottom)
 
-		if (left == right and bottom - top > 0)
-			right := left + 1 ; set positive width instead of zero when height > 0
+		; Hook returns character cell rect from UIA, not the actual caret rect.
+		; Use only the left edge and correct the vertical position.
+		right := left + 1
+		cellH := bottom - top
+		top := top - cellH // 2 - 2
+		bottom := top + cellH
 
 		; Cache valid position for use during selection operations
 		cachedLeft := left, cachedTop := top
