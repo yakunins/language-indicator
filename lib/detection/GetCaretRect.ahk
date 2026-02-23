@@ -187,9 +187,43 @@ end:
 		if !tid := DllCall("GetWindowThreadProcessId", "ptr", hwnd, "ptr*", &pid := 0, "uint")
 			return false
 
-		try {
-			; force update caret position
-			SendMessage(0x010f, 0, 0, hwnd) ; WM_IME_COMPOSITION
+		; WM_IME_COMPOSITION forces caret position update but destroys text
+		; selections in some apps (e.g. Simple Sticky Notes). Skip it when
+		; a selection likely exists, and return cached position instead.
+		static cachedLeft := 0, cachedTop := 0, cachedRight := 0, cachedBottom := 0
+		static cachedHwnd := 0, selectionLikely := false
+
+		; Track selection operations
+		if GetKeyState("Shift", "P") or GetKeyState("LButton", "P")
+			selectionLikely := true
+
+		; Reset when window changes
+		if (cachedHwnd != hwnd)
+			selectionLikely := false
+
+		; Reset when a non-modifier key is pressed (clears selection in the app)
+		if selectionLikely and !GetKeyState("Shift", "P") and !GetKeyState("LButton", "P") and !GetKeyState("Ctrl", "P") {
+			; Check common VK codes (0x08-0x5A) for any non-modifier key press
+			vk := 0x08
+			while vk <= 0x5A {
+				if (vk != 0x10 and vk != 0x11 and vk != 0x12 and vk != 0x14 ; Shift, Ctrl, Alt, CapsLock
+					and DllCall("GetAsyncKeyState", "int", vk, "short") & 0x8000) {
+					selectionLikely := false
+					break
+				}
+				vk++
+			}
+		}
+
+		skipIme := GetKeyState("Shift", "P") or GetKeyState("Ctrl", "P") or GetKeyState("LButton", "P") or selectionLikely
+		if !skipIme {
+			try SendMessage(0x010f, 0, 0, hwnd) ; WM_IME_COMPOSITION
+		} else if (cachedHwnd == hwnd and (cachedBottom - cachedTop) > 0) {
+			; Return cached position during selection operations
+			left := cachedLeft, top := cachedTop
+			right := cachedRight, bottom := cachedBottom
+			cartetDetectMethod := "getCaretPosFromHook (cached)"
+			return true
 		}
 
 		; open a handle to a process (pid) with specific access rights:
@@ -250,8 +284,18 @@ end:
 		getRect(rect, &left, &top, &right, &bottom)
 		scaleRect(getWinScale(hwnd), &left, &top, &right, &bottom)
 		fixDPIScaleHook(&left, &top, &right, &bottom)
-		if (left == right and bottom - top > 0)
-			right := left + 1 ; set positive width instead of zero when height > 0
+
+		; Hook returns character cell rect from UIA, not the actual caret rect.
+		; Use only the left edge and correct the vertical position.
+		right := left + 1
+		cellH := bottom - top
+		top := top - cellH // 2 - 2
+		bottom := top + cellH
+
+		; Cache valid position for use during selection operations
+		cachedLeft := left, cachedTop := top
+		cachedRight := right, cachedBottom := bottom
+		cachedHwnd := hwnd
 
 		cartetDetectMethod := "getCaretPosFromHook"
 		return true
