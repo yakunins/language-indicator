@@ -9,7 +9,7 @@ Keeps track of your current keyboard language/layout and changes [caret](https:/
 It works in most envs, including consoles and Universal Windows Apps, aka Metro apps.
 Exceptions are Adobe Indesign and some .NET MAUI apps.
 
-Written for [AHK v2](https://www.autohotkey.com/docs/v2/).
+Built with [AutoHotkey v2](https://www.autohotkey.com/v2/). Executable compiled with [Ahk2Exe](https://github.com/AutoHotkey/Ahk2Exe).
 
 ## Installation
 
@@ -46,5 +46,5 @@ Standalone version creates a marker near the mouse cursor <ins>with lag</ins>. S
 | `cursors` | CUR, ANI, ICO | Replaces system cursor (no lag)        |
 | `cursors` | PNG           | Floating mark near cursor (slight lag) |
 
-Enjoy!
+Enjoy!  
 A donut, [maybe](https://www.paypal.com/donate/?business=KXM47EKBXFV4S&no_recurring=0&item_name=funding+of+github.com%2Fyakunins&currency_code=USD)? 🍩
