@@ -5,12 +5,12 @@ echo === Language Indicator - Compile ===
 echo.
 
 :: Set paths
-set "ScriptDir=%~dp0"
-set "SourceFile=%ScriptDir%language-indicator.ahk"
-set "OutputFile=%ScriptDir%language-indicator.exe"
+set "ProjectDir=%~dp0.."
+set "SourceFile=%ProjectDir%\language-indicator.ahk"
+set "OutputFile=%ProjectDir%\language-indicator.exe"
 set "Compiler=C:\Program Files\AutoHotkey\Compiler\Ahk2Exe.exe"
 set "BaseFile=C:\Program Files\AutoHotkey\v2\AutoHotkey64.exe"
-set "IconFile=%ScriptDir%img\app-icon.ico"
+set "IconFile=%ProjectDir%\img\app-icon.ico"
 
 :: Check if compiler exists
 if not exist "%Compiler%" (

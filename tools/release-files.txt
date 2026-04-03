@@ -1,0 +1,5 @@
+language-indicator.exe
+install.cmd
+uninstall.cmd
+cursors/
+carets/

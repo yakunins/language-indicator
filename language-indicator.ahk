@@ -6,7 +6,7 @@
 #include lib\utils\Merge.ahk
 
 class LanguageIndicator {
-    static Version := "0.7"
+    static Version := "0.75"
 
     __New(cfg?) {
         defaultCfg := {
