@@ -6,16 +6,18 @@
 #include lib\utils\Merge.ahk
 
 class LanguageIndicator {
-    static Version := "0.75"
+    static Version := "0.76"
 
     __New(cfg?) {
         defaultCfg := {
             caret: {
-                updatePeriod: 17, ; ~60 fps, caret position updates are not much frequent
+                inputCheckPeriod: 50,    ; polling rate of locale + capslock
+                markRepaintPeriod: 6,   ; 16ms ≈ 60fps, mark follows to the mouse cursor
                 markMargin: { x: 1, y: -1 }
             },
             cursor: {
-                updatePeriod: 6, ; ~166 fps, for your monitor could be less frequent
+                inputCheckPeriod: 50,    ; polling rate of locale + capslock 10×/sec
+                markRepaintPeriod: 6,    ; 16ms ≈ 60fps, mark follows to the mouse cursor
                 markMargin: { x: 2, y: -2, useCursorSize: true }
             }
         }

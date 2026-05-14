@@ -15,6 +15,7 @@ class IndicatorBase {
         this.inputState := InputState()
         this.markPainter := ImagePainter()
         this.markPainter.margin := this.cfg.markMargin
+        this.currentMarkObj := ""
 
         ; Create cached folder check function
         this.folderExistsCache := UseCached(
@@ -24,7 +25,11 @@ class IndicatorBase {
     }
 
     Run() {
-        SetTimer(() => this.Check(), this.cfg.updatePeriod)
+        ; inputCheckPeriod  — how often we poll keyboard locale + capslock and decide which mark to use
+        ; markRepaintPeriod — how often we refresh the mark at the current caret/cursor position
+        ;                     (ImagePainter.Paint() short-circuits when position+image are unchanged)
+        SetTimer(() => this.Check(), this.cfg.inputCheckPeriod)
+        SetTimer(() => this.Repaint(), this.cfg.markRepaintPeriod)
         OnExit((reason, code) => this.OnExit(reason, code))
     }
 
@@ -35,6 +40,12 @@ class IndicatorBase {
             : this.UseMarkEmbedded()
     }
 
+    Repaint() {
+        if (this.currentMarkObj == "")
+            return
+        this.PaintMark(this.currentMarkObj)
+    }
+
     FolderExists() {
         return this.folderExistsCache.Call()
     }
@@ -42,22 +53,24 @@ class IndicatorBase {
     UseMarkEmbedded() {
         markName := MarkResolver.GetMarkName(this.inputState.locale, this.inputState.capslock)
         if (markName == "") {
+            this.currentMarkObj := ""
             this.markPainter.RemoveWindow()
             return
         }
-        markObj := UseBase64Image(markName)
-        this.PaintMark(markObj)
+        this.currentMarkObj := UseBase64Image(markName)
+        this.PaintMark(this.currentMarkObj)
     }
 
     UseMarkFile() {
         markName := MarkResolver.GetMarkName(this.inputState.locale, this.inputState.capslock)
         if (markName == "") {
+            this.currentMarkObj := ""
             this.markPainter.RemoveWindow()
             return
         }
         markFile := MarkResolver.GetMarkFile(this.cfg.files, this.inputState.locale, this.inputState.capslock)
-        markObj := { name: markName, image: markFile }
-        this.PaintMark(markObj)
+        this.currentMarkObj := { name: markName, image: markFile }
+        this.PaintMark(this.currentMarkObj)
     }
 
     ; Abstract method - subclasses must implement

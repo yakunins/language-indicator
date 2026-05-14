@@ -2,15 +2,18 @@
 
 /*
 How it works:
-1. A timer runs Check() every updatePeriod (default 100ms)
-2. Check() updates input state (keyboard locale and capslock)
-3. Determines whether to use embedded base64 images or external files
-4. MarkResolver returns appropriate mark name based on locale/capslock
-5. GetCaretRect() detects caret position using multiple methods:
+1. Check() runs every inputCheckPeriod (default 100ms)
+   - Updates input state (keyboard locale and capslock)
+   - Decides which mark (embedded or file) should be shown
+   - Stores the chosen mark on this.currentMarkObj and paints once
+2. Repaint() runs every markRepaintPeriod (default 100ms)
+   - Re-paints the current mark at the latest caret position
+   - ImagePainter.Paint() short-circuits when position + image are unchanged,
+     so idle ticks are cheap (no GDI work)
+3. MarkResolver returns appropriate mark name based on locale/capslock
+4. GetCaretRect() detects caret position using multiple methods:
    - GUI thread info, UIA, WPF caret, MSAA, or shell hook injection
-6. If caret found, paints indicator image at caret position
-7. BatchedPaintScheduler coordinates painting with cursor indicator to prevent glitches
-8. If locale is default (first) and capslock is off, no indicator is shown
+5. If locale is default (first) and capslock is off, no indicator is shown
 */
 
 #requires AutoHotkey v2.0
@@ -19,7 +22,6 @@ How it works:
 #include core\MarkResolver.ahk
 #include detection\GetCaretRect.ahk
 #include utils\DebugCaretPosition.ahk
-#include utils\BatchedPaintScheduler.ahk
 
 class CaretIndicator extends IndicatorBase {
     static DefaultConfig := {
@@ -32,37 +34,26 @@ class CaretIndicator extends IndicatorBase {
             extensions: [".png", ".gif"]
         },
         markMargin: { x: 1, y: -1 },
-        updatePeriod: 17, ; update rate ~60 fps
+        inputCheckPeriod: 100,    ; polling rate of locale + capslock
+        markRepaintPeriod: 16,   ; 16ms ≈ 60fps, caret mark follows the caret
     }
 
     __New(cfg?) {
         if !IsSet(cfg)
             cfg := CaretIndicator.DefaultConfig
         super.__New(cfg)
-        this.paintScheduler := BatchedPaintScheduler.RegisterIndicator()
-    }
-
-    UseMarkEmbedded() {
-        markName := MarkResolver.GetMarkName(this.inputState.locale, this.inputState.capslock)
-        if (markName == "") {
-            this.markPainter.RemoveWindow()
-            return
-        }
-        markObj := UseBase64Image(markName)
-        this.PaintMark(markObj)
-        this.paintScheduler.QueuePaint(() => this.PaintMark(markObj), "caret", this.cfg.updatePeriod)
     }
 
     UseMarkFile() {
         markFile := MarkResolver.GetMarkFile(this.cfg.files, this.inputState.locale, this.inputState.capslock)
         if (markFile == "") {
+            this.currentMarkObj := ""
             this.markPainter.RemoveWindow()
             return
         }
         SplitPath(markFile, &markName)
-        markObj := { name: markName, image: markFile }
-        this.PaintMark(markObj)
-        this.paintScheduler.QueuePaint(() => this.PaintMark(markObj), "caret", this.cfg.updatePeriod)
+        this.currentMarkObj := { name: markName, image: markFile }
+        this.PaintMark(this.currentMarkObj)
     }
 
     GetPosition() {

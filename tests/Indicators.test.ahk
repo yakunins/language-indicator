@@ -20,7 +20,8 @@ class CaretIndicatorTests {
         T.Assert(cfg.HasOwnProp("debug"), "Config has debug property")
         T.Assert(cfg.HasOwnProp("files"), "Config has files property")
         T.Assert(cfg.HasOwnProp("markMargin"), "Config has markMargin property")
-        T.Assert(cfg.HasOwnProp("updatePeriod"), "Config has updatePeriod property")
+        T.Assert(cfg.HasOwnProp("inputCheckPeriod"), "Config has inputCheckPeriod property")
+        T.Assert(cfg.HasOwnProp("markRepaintPeriod"), "Config has markRepaintPeriod property")
 
         ; Verify files config
         T.Assert(cfg.files.HasOwnProp("folder"), "files has folder property")
@@ -30,7 +31,8 @@ class CaretIndicatorTests {
         ; Verify default values
         T.AssertEqual(cfg.files.capslockSuffix, "-capslock", "Default capslock suffix is -capslock")
         T.Assert(cfg.files.extensions.Length == 2, "Default extensions has 2 items")
-        T.AssertEqual(cfg.updatePeriod, 17, "Default updatePeriod is 17")
+        T.AssertEqual(cfg.inputCheckPeriod, 100, "Default inputCheckPeriod is 100")
+        T.AssertEqual(cfg.markRepaintPeriod, 100, "Default markRepaintPeriod is 100")
     }
 
     static TestInitialization() {
@@ -42,7 +44,7 @@ class CaretIndicatorTests {
         T.Assert(indicator.HasOwnProp("cfg"), "Indicator has cfg")
         T.Assert(indicator.HasOwnProp("inputState"), "Indicator has inputState")
         T.Assert(indicator.HasOwnProp("markPainter"), "Indicator has markPainter (ImagePainter)")
-        T.Assert(indicator.HasOwnProp("paintScheduler"), "Indicator has paintScheduler")
+        T.Assert(indicator.HasOwnProp("currentMarkObj"), "Indicator has currentMarkObj")
 
         ; Verify types
         T.Assert(indicator.inputState is InputState, "inputState is InputState instance")
@@ -84,7 +86,8 @@ class CursorIndicatorTests {
         T.Assert(cfg.HasOwnProp("debug"), "Config has debug property")
         T.Assert(cfg.HasOwnProp("files"), "Config has files property")
         T.Assert(cfg.HasOwnProp("markMargin"), "Config has markMargin property")
-        T.Assert(cfg.HasOwnProp("updatePeriod"), "Config has updatePeriod property")
+        T.Assert(cfg.HasOwnProp("inputCheckPeriod"), "Config has inputCheckPeriod property")
+        T.Assert(cfg.HasOwnProp("markRepaintPeriod"), "Config has markRepaintPeriod property")
         T.Assert(cfg.HasOwnProp("target"), "Config has target property")
         T.Assert(cfg.HasOwnProp("mousePositionPrediction"), "Config has mousePositionPrediction property")
 
@@ -105,9 +108,9 @@ class CursorIndicatorTests {
 
         ; Verify indicator was created with components
         T.Assert(indicator.HasOwnProp("cfg"), "Indicator has cfg")
-        T.Assert(indicator.HasOwnProp("state"), "Indicator has state")
         T.Assert(indicator.HasOwnProp("inputState"), "Indicator has inputState")
         T.Assert(indicator.HasOwnProp("markPainter"), "Indicator has markPainter (ImagePainter)")
+        T.Assert(indicator.HasOwnProp("currentMarkObj"), "Indicator has currentMarkObj")
         T.Assert(indicator.HasOwnProp("modifiedCursorsCount"), "Indicator has modifiedCursorsCount")
 
         ; Verify initial cursor state

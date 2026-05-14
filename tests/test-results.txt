@@ -43,31 +43,6 @@ Starting Language Indicator Test Suite
   PASS: Returns empty string for completely unknown name
   PASS: Image value is String type, not Integer
 
-=== IndicatorState.Initialization ===
-  PASS: Initial markName is empty
-  PASS: Initial markImage is empty
-  PASS: Initial markFile is empty
-  PASS: prev property exists
-  PASS: Initial prev.markName is empty
-  PASS: Initial prev.markImage is empty
-  PASS: Initial prev.markFile is empty
-=== IndicatorState.StorePrev ===
-  PASS: prev.markName stored correctly
-  PASS: prev.markImage stored correctly
-  PASS: prev.markFile stored correctly
-  PASS: prev.markName unchanged after current update
-  PASS: prev.markImage unchanged after current update
-=== IndicatorState.HasMarkChanged ===
-  PASS: No change when both current and prev are empty
-  PASS: Change detected when markName differs
-  PASS: No change after StorePrev
-  PASS: Change detected when markImage differs
-  PASS: Change detected when markFile differs
-=== IndicatorState.Clear ===
-  PASS: markName cleared
-  PASS: markImage cleared
-  PASS: markFile cleared
-
 === InputState.Initialization ===
   PASS: Initial locale is 1
   PASS: Initial capslock is 0
@@ -95,20 +70,20 @@ Starting Language Indicator Test Suite
   PASS: Config has debug property
   PASS: Config has files property
   PASS: Config has markMargin property
-  PASS: Config has updatePeriod property
+  PASS: Config has inputCheckPeriod property
+  PASS: Config has markRepaintPeriod property
   PASS: files has folder property
   PASS: files has extensions property
   PASS: files has capslockSuffix property
   PASS: Default capslock suffix is -capslock
   PASS: Default extensions has 2 items
-  PASS: Default updatePeriod is 17
+  PASS: Default inputCheckPeriod is 100
+  PASS: Default markRepaintPeriod is 100
 === CaretIndicator.Initialization ===
   PASS: Indicator has cfg
-  PASS: Indicator has state
   PASS: Indicator has inputState
   PASS: Indicator has markPainter (ImagePainter)
-  PASS: Indicator has paintScheduler
-  PASS: state is IndicatorState instance
+  PASS: Indicator has currentMarkObj
   PASS: inputState is InputState instance
   PASS: markPainter is ImagePainter instance
 === CaretIndicator.GetPosition ===
@@ -124,7 +99,8 @@ Starting Language Indicator Test Suite
   PASS: Config has debug property
   PASS: Config has files property
   PASS: Config has markMargin property
-  PASS: Config has updatePeriod property
+  PASS: Config has inputCheckPeriod property
+  PASS: Config has markRepaintPeriod property
   PASS: Config has target property
   PASS: Config has mousePositionPrediction property
   PASS: target has cursorId property
@@ -134,9 +110,9 @@ Starting Language Indicator Test Suite
   PASS: Cursor extensions has 4 items (cur, ani, ico, png)
 === CursorIndicator.Initialization ===
   PASS: Indicator has cfg
-  PASS: Indicator has state
   PASS: Indicator has inputState
   PASS: Indicator has markPainter (ImagePainter)
+  PASS: Indicator has currentMarkObj
   PASS: Indicator has modifiedCursorsCount
   PASS: Initial modifiedCursorsCount is 0
 === CursorIndicator.GetPosition ===
@@ -153,15 +129,21 @@ Starting Language Indicator Test Suite
   PASS: cursorIndicator is CursorIndicator instance
   PASS: Version is 0.5
 === LanguageIndicator.CustomConfig ===
-  PASS: Caret updatePeriod is 50
-  PASS: Cursor updatePeriod is 50
-=== LanguageIndicator.UpdatePeriodPropagation ===
-  PASS: updatePeriod=5 propagates to caret
-  PASS: updatePeriod=5 propagates to cursor
-  PASS: updatePeriod=100 propagates to caret
-  PASS: updatePeriod=100 propagates to cursor
+  PASS: Caret inputCheckPeriod is 50
+  PASS: Cursor inputCheckPeriod is 50
+  PASS: Caret markRepaintPeriod is 25
+  PASS: Cursor markRepaintPeriod is 25
+=== LanguageIndicator.PeriodPropagation ===
+  PASS: inputCheckPeriod=5 propagates to caret
+  PASS: inputCheckPeriod=5 propagates to cursor
+  PASS: markRepaintPeriod=5 propagates to caret
+  PASS: markRepaintPeriod=5 propagates to cursor
+  PASS: inputCheckPeriod=200 propagates to caret
+  PASS: inputCheckPeriod=200 propagates to cursor
+  PASS: markRepaintPeriod=33 propagates to caret
+  PASS: markRepaintPeriod=33 propagates to cursor
 
 
 === SUMMARY ===
-Total: 129 | Passed: 129 | Failed: 0
+Total: 116 | Passed: 116 | Failed: 0
 All tests passed!

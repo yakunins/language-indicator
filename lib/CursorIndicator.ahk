@@ -2,19 +2,22 @@
 
 /*
 How it works:
-1. A timer runs Check() every updatePeriod (default 100ms)
-2. Check() first verifies the cursor is IBeam (text input cursor)
-   - If not IBeam, reverts any modified cursors and hides the mark
-3. Updates input state (keyboard locale and capslock)
-4. Determines whether to use cursor files or embedded images:
-   - If cursor files folder exists: uses files from that folder
-     - .cur/.ani/.ico files: replaces system IBeam cursor via SetSystemCursor
-     - .png files: paints floating mark image that follows mouse position
-   - If no folder: paints floating mark using embedded base64 images
-5. Mouse position prediction reduces visual lag between cursor and mark
-6. BatchedPaintScheduler coordinates painting with caret indicator to prevent glitches
-7. On script exit, restores original system cursors via SystemParametersInfo
-8. If locale is default (first) and capslock is off, no indicator is shown
+1. Check() runs every inputCheckPeriod (default 100ms)
+   - Verifies the cursor is IBeam (text input cursor); if not, hides the mark
+   - Updates input state (keyboard locale and capslock)
+   - Determines whether to use cursor files or embedded images:
+     * If cursor files folder exists: uses files from that folder
+       - .cur/.ani/.ico files: replaces system IBeam cursor via SetSystemCursor
+       - .png files: paints floating mark image that follows mouse position
+     * If no folder: paints floating mark using embedded base64 images
+   - Stores the chosen mark on this.currentMarkObj
+2. Repaint() runs every markRepaintPeriod (default 16ms, ~60fps)
+   - Re-paints the current mark at the latest mouse position so it tracks the moving cursor
+   - ImagePainter.Paint() short-circuits when position + image are unchanged,
+     so idle ticks are cheap (no GDI work)
+3. Mouse position prediction reduces visual lag between cursor and mark
+4. On script exit, restores original system cursors via SystemParametersInfo
+5. If locale is default (first) and capslock is off, no indicator is shown
 */
 
 #requires AutoHotkey v2.0
@@ -23,7 +26,6 @@ How it works:
 #include core\MarkResolver.ahk
 #include detection\GetMousePosPrediction.ahk
 #include detection\GetCursorSize.ahk
-#include utils\BatchedPaintScheduler.ahk
 
 class CursorIndicator extends IndicatorBase {
     static DefaultConfig := {
@@ -40,7 +42,8 @@ class CursorIndicator extends IndicatorBase {
             cursorId: 32513,
             cursorName: "IBeam"
         },
-        updatePeriod: 16 ; update rate ~60 fps
+        inputCheckPeriod: 100,    ; polling rate of locale + capslock
+        markRepaintPeriod: 16,    ; 16ms ≈ 60fps, mark follows to the mouse cursor
     }
 
 
@@ -49,29 +52,16 @@ class CursorIndicator extends IndicatorBase {
             cfg := CursorIndicator.DefaultConfig
         super.__New(cfg)
 
-        this.paintScheduler := BatchedPaintScheduler.RegisterIndicator()
         this.modifiedCursorsCount := 0
-
-        ; Override folder exists cache to include Decrease() call on cache refresh
-        this.folderExistsCache := UseCached(
-            () => this.CheckFolderExistsWithDecrease(),
-            this.cfg.files.folderExistCheckPeriod
-        )
 
         if (cfg.markMargin.useCursorSize)
             this.markPainter.margin := this.GetCursorSizeMargin()
     }
 
-    CheckFolderExistsWithDecrease() {
-        exists := DirExist(this.cfg.files.folder)
-        if exists
-            BatchedPaintScheduler.UnregisterIndicator()
-        return exists
-    }
-
     Check() {
         if (A_Cursor != this.cfg.target.cursorName) {
             this.RevertCursors()
+            this.currentMarkObj := ""
             this.markPainter.HideWindow()
             return
         }
@@ -81,20 +71,21 @@ class CursorIndicator extends IndicatorBase {
             : this.UseMarkEmbedded()
     }
 
-    UseMarkEmbedded() {
-        markName := MarkResolver.GetMarkName(this.inputState.locale, this.inputState.capslock)
-        if (markName == "") {
-            this.markPainter.RemoveWindow()
+    Repaint() {
+        if (this.currentMarkObj == "")
+            return
+        ; cheap re-check: don't paint over a non-text area between Check ticks
+        if (A_Cursor != this.cfg.target.cursorName) {
+            this.markPainter.HideWindow()
             return
         }
-        markObj := UseBase64Image(markName)
-        this.PaintMark(markObj)
-        this.paintScheduler.QueuePaint(() => this.PaintMark(markObj), "cursor", this.cfg.updatePeriod)
+        this.PaintMark(this.currentMarkObj)
     }
 
     UseFile() {
         filePath := MarkResolver.GetMarkFile(this.cfg.files, this.inputState.locale, this.inputState.capslock)
         if (filePath == "") {
+            this.currentMarkObj := ""
             this.RevertCursors()
             this.markPainter.HideWindow()
             return
@@ -109,12 +100,13 @@ class CursorIndicator extends IndicatorBase {
     UseMarkPngFile(filePath) {
         this.RevertCursors()
         SplitPath(filePath, &fileName)
-        markObj := { name: fileName, image: filePath }
-        this.PaintMark(markObj)
-        this.paintScheduler.QueuePaint(() => this.PaintMark(markObj), "cursor", this.cfg.updatePeriod)
+        this.currentMarkObj := { name: fileName, image: filePath }
+        this.PaintMark(this.currentMarkObj)
     }
 
     UseCursorFile(cursorFile := "") {
+        ; system-cursor replacement; nothing to repaint
+        this.currentMarkObj := ""
         if (cursorFile == "") {
             this.RevertCursors()
             return
