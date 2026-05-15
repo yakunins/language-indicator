@@ -43,6 +43,18 @@ Starting Language Indicator Test Suite
   PASS: Returns empty string for completely unknown name
   PASS: Image value is String type, not Integer
 
+=== UseCachedWhileIdle.FirstCallComputes ===
+  PASS: First call returns 1
+  PASS: fn called exactly once
+=== UseCachedWhileIdle.CacheReuseWhenIdle ===
+  PASS: fn called only once across 3 rapid calls
+=== UseCachedWhileIdle.RefreshAfterTtl ===
+  PASS: fn called twice after refreshAfter elapses
+=== UseCachedWhileIdle.KeyPressInvalidatesCache ===
+  PASS: fn called on every call while a key is pressed
+=== UseCachedWhileIdle.KeyReleaseRestoresCache ===
+  PASS: fn not re-called after key released (cache reused)
+
 === InputState.Initialization ===
   PASS: Initial locale is 1
   PASS: Initial capslock is 0
@@ -78,12 +90,14 @@ Starting Language Indicator Test Suite
   PASS: Default capslock suffix is -capslock
   PASS: Default extensions has 2 items
   PASS: Default inputCheckPeriod is 100
-  PASS: Default markRepaintPeriod is 100
+  PASS: Default markRepaintPeriod is 16
+  PASS: Default positionCacheTtl is 1000
 === CaretIndicator.Initialization ===
   PASS: Indicator has cfg
   PASS: Indicator has inputState
   PASS: Indicator has markPainter (ImagePainter)
   PASS: Indicator has currentMarkObj
+  PASS: Indicator has getCachedPosition
   PASS: inputState is InputState instance
   PASS: markPainter is ImagePainter instance
 === CaretIndicator.GetPosition ===
@@ -145,5 +159,5 @@ Starting Language Indicator Test Suite
 
 
 === SUMMARY ===
-Total: 116 | Passed: 116 | Failed: 0
+Total: 124 | Passed: 124 | Failed: 0
 All tests passed!

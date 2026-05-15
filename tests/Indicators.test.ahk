@@ -32,7 +32,8 @@ class CaretIndicatorTests {
         T.AssertEqual(cfg.files.capslockSuffix, "-capslock", "Default capslock suffix is -capslock")
         T.Assert(cfg.files.extensions.Length == 2, "Default extensions has 2 items")
         T.AssertEqual(cfg.inputCheckPeriod, 100, "Default inputCheckPeriod is 100")
-        T.AssertEqual(cfg.markRepaintPeriod, 100, "Default markRepaintPeriod is 100")
+        T.AssertEqual(cfg.markRepaintPeriod, 16, "Default markRepaintPeriod is 16")
+        T.AssertEqual(cfg.positionCacheTtl, 1000, "Default positionCacheTtl is 1000")
     }
 
     static TestInitialization() {
@@ -45,6 +46,7 @@ class CaretIndicatorTests {
         T.Assert(indicator.HasOwnProp("inputState"), "Indicator has inputState")
         T.Assert(indicator.HasOwnProp("markPainter"), "Indicator has markPainter (ImagePainter)")
         T.Assert(indicator.HasOwnProp("currentMarkObj"), "Indicator has currentMarkObj")
+        T.Assert(indicator.HasOwnProp("getCachedPosition"), "Indicator has getCachedPosition")
 
         ; Verify types
         T.Assert(indicator.inputState is InputState, "inputState is InputState instance")

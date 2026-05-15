@@ -43,7 +43,7 @@ class CursorIndicator extends IndicatorBase {
             cursorName: "IBeam"
         },
         inputCheckPeriod: 100,    ; polling rate of locale + capslock
-        markRepaintPeriod: 16,    ; 16ms ≈ 60fps, mark follows to the mouse cursor
+        markRepaintPeriod: 6,    ; 6ms ≈ 165Hz, mark follows to the mouse cursor
     }
 
 

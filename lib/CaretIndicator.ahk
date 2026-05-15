@@ -22,6 +22,7 @@ How it works:
 #include core\MarkResolver.ahk
 #include detection\GetCaretRect.ahk
 #include utils\DebugCaretPosition.ahk
+#include utils\UseCachedWhileIdle.ahk
 
 class CaretIndicator extends IndicatorBase {
     static DefaultConfig := {
@@ -35,13 +36,18 @@ class CaretIndicator extends IndicatorBase {
         },
         markMargin: { x: 1, y: -1 },
         inputCheckPeriod: 100,    ; polling rate of locale + capslock
-        markRepaintPeriod: 16,   ; 16ms ≈ 60fps, caret mark follows the caret
+        markRepaintPeriod: 16,    ; 16ms ≈ 60Hz, caret mark follows the caret
+        positionCacheTtl: 1000,    ; max age (ms) of cached GetCaretRect result when user is idle
     }
 
     __New(cfg?) {
         if !IsSet(cfg)
             cfg := CaretIndicator.DefaultConfig
         super.__New(cfg)
+        this.getCachedPosition := UseCachedWhileIdle(
+            () => this.ComputePosition(),
+            this.cfg.positionCacheTtl
+        )
     }
 
     UseMarkFile() {
@@ -57,6 +63,10 @@ class CaretIndicator extends IndicatorBase {
     }
 
     GetPosition() {
+        return this.getCachedPosition.Call()
+    }
+
+    ComputePosition() {
         left := -1, top := -1, bottom := -1, right := -1
         detectMethod := ""
         GetCaretRect(&left, &top, &right, &bottom, &detectMethod)
