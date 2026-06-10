@@ -3,3 +3,5 @@ install.cmd
 uninstall.cmd
 cursors/
 carets/
+!cursors/ibeam-variants/
+!carets/variants/

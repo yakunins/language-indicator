@@ -1,4 +1,5 @@
 temp/
+release/
 node_modules/
 .claude/
 .vscode/

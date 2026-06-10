@@ -11,6 +11,12 @@ if /i not "%COMPILED%"=="y" (
     exit /b 1
 )
 
+:: Clean up the release staging folder
+if exist "release\" (
+    echo Cleaning release\ ...
+    rmdir /s /q "release"
+)
+
 :: Check for uncommitted changes
 git diff --quiet 2>nul
 if errorlevel 1 (
@@ -51,18 +57,29 @@ if not errorlevel 1 (
     exit /b 1
 )
 
-:: Verify all release files exist
-for /f "usebackq delims=" %%f in ("tools\release-files.txt") do (
-    if not exist "%%f" (
-        echo ERROR: Missing file: %%f
-        exit /b 1
-    )
+:: Stage release files into release\ (validates includes, applies ! exclusions)
+echo Staging files into release\ ...
+powershell -NoProfile -ExecutionPolicy Bypass -File "tools\stage-release-files.ps1" -ListFile "tools\release-files.txt" -OutDir "release"
+if errorlevel 1 (
+    echo ERROR: Failed to stage release files
+    exit /b 1
 )
 
-:: Create zip from release-files.txt
+:: Show what was staged and confirm before publishing
+echo.
+echo Files staged in release\:
+dir /s /b "release"
+echo.
+set /p "CONFIRM=Confirm releasing files from /release/ to github repo? (y/n): "
+if /i not "%CONFIRM%"=="y" (
+    echo Aborted.
+    exit /b 1
+)
+
+:: Zip the staged release folder
 if exist "%ZIP%" del "%ZIP%"
 echo Creating %ZIP%...
-powershell -NoProfile -Command "Compress-Archive -Path (Get-Content 'tools\release-files.txt' | ForEach-Object { $_.Trim() } | Where-Object { $_ -ne '' }) -DestinationPath '%ZIP%'"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "Compress-Archive -Path 'release\*' -DestinationPath '%ZIP%'"
 if errorlevel 1 (
     echo ERROR: Failed to create zip
     exit /b 1
